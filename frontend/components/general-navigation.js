@@ -11,7 +11,7 @@ import Backup from "../screens/backup";
 import Setting from "../screens/setting";
 import Home from "../screens/home";
 import { Ionicons } from "@expo/vector-icons";
-import ProfIcon from "../assets/user.png";
+import ProfIcon from "../assets/images/user.png";
 import { COLORS } from "../constraints/constants";
 
 export default function GeneralNavigation() {
