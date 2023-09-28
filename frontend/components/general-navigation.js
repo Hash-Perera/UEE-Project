@@ -5,105 +5,99 @@ import {
   DrawerItemList,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
-import { NavigationContainer } from "@react-navigation/native";
 import Contact from "../screens/contact";
 import Backup from "../screens/backup";
 import Setting from "../screens/setting";
 import Home from "../screens/home";
 import { Ionicons } from "@expo/vector-icons";
-import ProfIcon from "../assets/user.png";
+import ProfIcon from "../assets/images/user.png";
 import { COLORS } from "../constraints/constants";
 
 export default function GeneralNavigation() {
   const Drawer = createDrawerNavigator();
   return (
-    <NavigationContainer>
-      <Drawer.Navigator
-        drawerContent={(props) => {
-          return (
-            <SafeAreaView style={{ flex: 1 }}>
-              <View
+    <Drawer.Navigator
+      drawerContent={(props) => {
+        return (
+          <SafeAreaView style={{ flex: 1 }}>
+            <View
+              style={{
+                height: 200,
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+                borderBottomColor: "#f4f4f4",
+                borderBottomWidth: 1,
+              }}
+            >
+              <Image
+                source={ProfIcon}
                 style={{
-                  height: 200,
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderBottomColor: "#f4f4f4",
-                  borderBottomWidth: 1,
-
-                  //backgroundColor: "blue",
+                  height: 130,
+                  width: 130,
+                  borderRadius: 65,
                 }}
-              >
-                <Image
-                  source={ProfIcon}
-                  style={{
-                    height: 130,
-                    width: 130,
-                    borderRadius: 65,
-                  }}
-                />
-                <Text>Hash</Text>
-              </View>
-              <DrawerItemList {...props} />
-            </SafeAreaView>
-          );
-        }}
-        screenOptions={{
-          drawerStyle: {
-            backgroundColor: COLORS.primary,
-            width: 250,
-          },
+              />
+              <Text>Hash</Text>
+            </View>
+            <DrawerItemList {...props} />
+          </SafeAreaView>
+        );
+      }}
+      screenOptions={{
+        drawerStyle: {
+          backgroundColor: COLORS.primary,
+          width: 250,
+        },
 
-          headerStyle: {
-            backgroundColor: COLORS.primary,
-          },
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-          //drawerActiveTintColor: colors.secondary,
-          drawerActiveBackgroundColor: COLORS.co_primary,
-          drawerLabelStyle: {
-            color: COLORS.white,
-          },
+        headerStyle: {
+          backgroundColor: COLORS.primary,
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
+        drawerActiveBackgroundColor: COLORS.co_primary,
+        drawerLabelStyle: {
+          color: COLORS.white,
+        },
+      }}
+    >
+      <Drawer.Screen
+        name="Home"
+        options={{
+          drawerLabel: "Home",
+          title: "Home",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={COLORS.white} />
+          ),
         }}
-      >
-        <Drawer.Screen
-          name="Home"
-          options={{
-            drawerLabel: "Home",
-            title: "Home",
-            drawerIcon: ({ color, size }) => (
-              <Ionicons name="home" size={size} color={COLORS.white} />
-            ),
-          }}
-          component={Home}
-        />
-        <Drawer.Screen
-          name="Contacts"
-          options={{
-            drawerLabel: "Contact",
-            title: "Contact",
-          }}
-          component={Contact}
-        />
-        <Drawer.Screen
-          name="Backup"
-          options={{
-            drawerLabel: "Backup",
-            title: "Contact",
-          }}
-          component={Backup}
-        />
-        <Drawer.Screen
-          name="Settings"
-          options={{
-            drawerLabel: "Settings",
-            title: "Settings",
-          }}
-          component={Setting}
-        />
-      </Drawer.Navigator>
-    </NavigationContainer>
+        component={Home}
+      />
+      <Drawer.Screen
+        name="Contacts"
+        options={{
+          drawerLabel: "Contact",
+          title: "Contact",
+        }}
+        component={Contact}
+      />
+      <Drawer.Screen
+        name="Backup"
+        options={{
+          drawerLabel: "Backup",
+          title: "Contact",
+        }}
+        component={Backup}
+      />
+      <Drawer.Screen
+        name="Settings"
+        options={{
+          drawerLabel: "Settings",
+          title: "Settings",
+        }}
+        component={Setting}
+      />
+    </Drawer.Navigator>
   );
 }
