@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { TextInput, Provider } from 'react-native-paper';
 import DropDown from "react-native-paper-dropdown";
+import { useNavigation } from '@react-navigation/native';
 
 const SignUp = () => {
+  const navigation = useNavigation();
     const [showDropDown, setShowDropDown] = useState(false);
     const [accountType, setAccountType] = useState("");
+
+    const handleBack = ()=>{
+      navigation.navigate('Login');
+    }
 
     const accountTypes = [
         {
@@ -27,7 +33,7 @@ const SignUp = () => {
       <View style={styles.container}>
         <View style={styles.topContainer}>
           <Image source={require('../assets/images/loginBackground.png')} style={styles.backgroundImage} resizeMode='cover' />
-          <TouchableOpacity style={{ position: 'absolute', top: '10%', left: '1%' }}>
+          <TouchableOpacity style={{ position: 'absolute', top: '10%', left: '1%' }} onPress ={handleBack}>
             <Image source={require('../assets/images/backIcon.png')} />
           </TouchableOpacity>
           <Text style={styles.welcomeText}>
@@ -86,7 +92,7 @@ const SignUp = () => {
               <TouchableOpacity style={styles.loginButton}>
                 <Text style={styles.loginButtonText}>Register</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.signButton} >
+              <TouchableOpacity style={styles.signButton} onPress={handleBack}>
                 <Text style={styles.signButtonText}>Login</Text>
               </TouchableOpacity>
             </View>

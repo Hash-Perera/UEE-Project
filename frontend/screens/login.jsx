@@ -1,15 +1,24 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { TextInput } from 'react-native-paper';
-
-
+import { useNavigation } from '@react-navigation/native';
 
 const Login = () => {
+  const navigation = useNavigation();
+  const handleSignUpBtn = () => {
+    navigation.navigate('SignUp');
+  }
+  const handleBack = ()=>{
+    navigation.navigate('GetStarted');
+  }
+  const handleLogin = ()=>{
+    navigation.navigate('GeneralNavigation');
+  }
   return (
     <View style={styles.container}>
       <View>
         <Image source={require('../assets/images/loginBackground.png')} style={styles.backgroundImage} resizeMode='cover' />
-        <TouchableOpacity style={{position: 'absolute', top: '10%', left: '1%'}}>
+        <TouchableOpacity style={{position: 'absolute', top: '10%', left: '1%'}} onPress={handleBack}>
           <Image source={require('../assets/images/backIcon.png')} />
         </TouchableOpacity>
         <Text style={styles.welcomeText}>
@@ -34,10 +43,10 @@ const Login = () => {
     </TouchableOpacity>
       </View>
       <View style={{marginTop: 20}}>
-      <TouchableOpacity style={styles.loginButton}>
+      <TouchableOpacity style={styles.loginButton} onPress ={handleLogin}>
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.signButton} >
+            <TouchableOpacity style={styles.signButton} onPress = {handleSignUpBtn}>
               <Text style={styles.signButtonText}>Sign up</Text>
             </TouchableOpacity>
      </View>
