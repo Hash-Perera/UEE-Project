@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     marginTop : -100
   },
   loginButton: {
-    backgroundColor: "#16213E", // Button background color
+    backgroundColor: "#16213E", 
     padding: 15,
     borderRadius: 25,
     alignItems: "center",
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   loginButtonText: {
-    color: "#fff", // Button text color
+    color: "#fff", 
     fontSize: 18,
     fontWeight: "bold",
   },
