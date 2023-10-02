@@ -22,5 +22,6 @@ export default function App() {
       <Stack.Screen name="GeneralNavigation" component={GeneralNavigation} options={{headerShown: false}}/>
     </Stack.Navigator>
   </NavigationContainer> 
-     </SafeAreaView>);
+     </SafeAreaView>
+  )
 }
