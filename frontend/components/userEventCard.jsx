@@ -25,17 +25,19 @@ export default UserEventCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    marginTop: height * 0.02, // 2% of the screen height as margin
+    marginTop: height * 0.02, 
     flexDirection: 'row',
     backgroundColor: '#fff',
-    borderBottomColor: '#040D12',
+    borderRadius: width * 0.04, 
+    shadowColor: '#000',
   },
   imageContainer: {
-    height: width * 0.4, // 40% of the screen width as height
-    width: width * 0.4, // 40% of the screen width as width
-    borderRadius: width * 0.05, // 5% of the screen width as borderRadius
+    flex: 1,
+    height: width * 0.35, 
+    width: width * 0.4, 
     overflow: 'hidden',
-    margin: width * 0.02, // 2% of the screen width as margin
+    margin: width * 0.02, 
+    marginTop:height * 0.0 
   },
   image: {
     flex: 1,
@@ -44,11 +46,10 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flex: 1,
-    margin: width * 0.02, // 2% of the screen width as margin
-    gap: height * 0.01, // 1% of the screen height as gap
-  },
+    margin: width * 0.02, 
+    gap: height * 0.02, },
   title: {
-    fontSize: width * 0.05, // 5% of the screen width as font size
+    fontSize: width * 0.05, 
     fontWeight: 'bold',
   },
 });
