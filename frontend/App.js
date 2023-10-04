@@ -7,6 +7,7 @@ import GeneralNavigation from "./components/general-navigation";
 import Login from "./screens/login";
 import SignUp from "./screens/signUp";
 import GetStarted from "./screens/getStarted";
+import GeneralEventDetails from "./screens/generalEventDetails";
 
 const Stack = createStackNavigator();
 
@@ -33,6 +34,11 @@ export default function App() {
           <Stack.Screen
             name="GeneralNavigation"
             component={GeneralNavigation}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="GeneralEventDetails"
+            component={GeneralEventDetails}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
