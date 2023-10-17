@@ -182,11 +182,11 @@ const styles = StyleSheet.create({
     width: "45%",
     alignSelf: "center",
     borderRadius: width * 0.1,
-    marginBottom: height * 0.02,
+    marginBottom: height * 0.01,
   },
   signButtonText: {
     color: "#070A35",
-    fontSize: width * 0.04,
+    fontSize: width * 0.05,
     fontWeight: "bold",
   },
 });

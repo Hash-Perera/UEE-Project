@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: height * 0.001,
+    marginBottom: height * 0.02,
   },
   loginButton: {
     backgroundColor: "#16213E",
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
   },
   signButtonText: {
     color: "#070A35",
-    fontSize: width * 0.04,
+    fontSize: width * 0.05,
     fontWeight: "bold",
   },
 });
