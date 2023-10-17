@@ -12,7 +12,7 @@ const { width, height } = Dimensions.get("window");
 
 const UserEventCard = ({ item, handleCardPress }) => {
   return (
-    <TouchableOpacity onPress={() => handleCardPress(item)}>
+    <TouchableOpacity onPress={() => handleCardPress(item.key)}>
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
           <Image
@@ -28,6 +28,7 @@ const UserEventCard = ({ item, handleCardPress }) => {
           <Text>Time: 19:00</Text>
         </View>
       </View>
+      {/*  <View style={styles.horizontalLine} /> */}
     </TouchableOpacity>
   );
 };
@@ -36,19 +37,19 @@ export default UserEventCard;
 
 const styles = StyleSheet.create({
   cardContainer: {
-    marginTop: height * 0.02,
+    marginTop: height * 0.01,
     flexDirection: "row",
-    backgroundColor: "#fff",
+    backgroundColor: "#D9D9D9",
     borderRadius: width * 0.04,
-    shadowColor: "#000",
+    padding: width * 0.02,
   },
   imageContainer: {
     flex: 1,
-    height: width * 0.35,
+    height: width * 0.38,
     width: width * 0.4,
     overflow: "hidden",
-    margin: width * 0.02,
-    marginTop: height * 0.0,
+    margin: width * 0.0,
+    marginTop: height * 0.001,
   },
   image: {
     flex: 1,
@@ -63,5 +64,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: width * 0.05,
     fontWeight: "bold",
+  },
+  horizontalLine: {
+    borderBottomColor: "gray",
+    borderBottomWidth: 0.4,
+    marginVertical: height * 0.01,
   },
 });
