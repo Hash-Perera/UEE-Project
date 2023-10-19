@@ -8,7 +8,8 @@ import Login from "./screens/login";
 import SignUp from "./screens/signUp";
 import GetStarted from "./screens/getStarted";
 import GeneralEventDetails from "./screens/generalEventDetails";
-
+import AllEventDetails from "./screens/allEventDetails";
+import PublishSponsorship from "./screens/publishSposorShip";
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -39,6 +40,16 @@ export default function App() {
           <Stack.Screen
             name="GeneralEventDetails"
             component={GeneralEventDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="AllEventDetails"
+            component={AllEventDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="PublishSponsorship"
+            component={PublishSponsorship}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
