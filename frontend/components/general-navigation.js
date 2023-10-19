@@ -17,6 +17,7 @@ import ReqSponsor from "../screens/reqSponsor";
 import { Ionicons } from "@expo/vector-icons";
 import ProfIcon from "../assets/images/user.png";
 import { COLORS } from "../constraints/constants";
+import OrganizerHome from "../screens/organizerhome";
 
 export default function GeneralNavigation() {
   const Drawer = createDrawerNavigator();
@@ -103,6 +104,16 @@ export default function GeneralNavigation() {
         }}
         component={Setting}
       />
+
+
+      <Drawer.Screen
+        name="Organizerhome"
+        options={{
+          drawerLabel: "Organizer Home",
+          title: "Organizer Home",
+        }}
+        component={OrganizerHome}
+
       <Drawer.Screen
         name="All Events"
         options={{
@@ -142,6 +153,7 @@ export default function GeneralNavigation() {
           title: "Request Sponsor",
         }}
         component={ReqSponsor}
+
       />
     </Drawer.Navigator>
   );
