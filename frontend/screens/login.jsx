@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   SafeAreaView,
+  KeyboardAvoidingView,
 } from "react-native";
 import { TextInput } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
@@ -42,23 +43,25 @@ const Login = () => {
           </TouchableOpacity>
           <Text style={styles.welcomeText}>Welcome{"\n"} back</Text>
         </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            label="Username"
-            mode="outlined"
-            placeholder="Enter username"
-          />
-          <TextInput
-            label="Password"
-            mode="outlined"
-            placeholder="Enter password"
-            secureTextEntry={true}
-            style={styles.passwordInput}
-          />
-          <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
-        </View>
+        <KeyboardAvoidingView behavior="position">
+          <View style={styles.inputContainer}>
+            <TextInput
+              label="Username"
+              mode="outlined"
+              placeholder="Enter username"
+            />
+            <TextInput
+              label="Password"
+              mode="outlined"
+              placeholder="Enter password"
+              secureTextEntry={true}
+              style={styles.passwordInput}
+            />
+            <TouchableOpacity style={styles.forgotPassword}>
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>Login</Text>

@@ -7,6 +7,9 @@ import {
   Modal,
   Dimensions,
   TouchableOpacity,
+  ScrollView,
+  FlatList,
+  TextInput,
 } from "react-native";
 import React, { useState, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -16,8 +19,52 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
+import UserFeedbackCard from "../components/userFeedbackCard";
 
 const GeneralEventDetails = ({ route }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [feedbackData, setFeedbackData] = useState([
+    {
+      id: "1",
+      userName: "John Doe",
+      feedback: "This is a very good event. I really enjoyed it.",
+      userImage: require("../assets/images/user.png"),
+      rating: "1",
+    },
+    {
+      id: "2",
+      userName: "Doe",
+      feedback: "This is a very good event. I really enjoyed it.",
+      userImage: require("../assets/images/user.png"),
+      rating: "2",
+    },
+    {
+      id: "3",
+      userName: "John Doe",
+      feedback: "This is a very good event. I really enjoyed it.",
+      userImage: require("../assets/images/user.png"),
+      rating: "3",
+    },
+    {
+      id: "4",
+      userName: "John Doe",
+      feedback: "This is a very good event. I really enjoyed it.",
+      userImage: require("../assets/images/user.png"),
+      rating: "4",
+    },
+  ]);
+
+  const submitFeedback = () => {
+    setFeedback("");
+    setModalVisible(false);
+  };
+
+  const openFeedbackModal = () => {
+    setModalVisible(true);
+    console.log("Feedback Modal Opened");
+  };
+
   const { item } = route.params;
   console.log(item);
 
@@ -63,28 +110,64 @@ const GeneralEventDetails = ({ route }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.eventDetails}>
-            <Text>
-              <Text style={{ fontWeight: "bold" }}>Date: </Text>
-              26th February 2022
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "bold" }}>Time: </Text>
-              8.00 am
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "bold" }}>Venue: </Text>
-              SLIIT Malabe Campus
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "bold" }}>Organized by: </Text>
-              FCSC
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "bold" }}>Contact: </Text>
-              0771234567
-            </Text>
+            <ScrollView>
+              <Text>
+                <Text style={{ fontWeight: "bold", color: "gray" }}>
+                  Date:{" "}
+                </Text>
+                26th February 2022
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text>
+                  <Text style={{ fontWeight: "bold", color: "gray" }}>
+                    Time:{" "}
+                  </Text>
+                  8.00 am
+                </Text>
+                <Text>
+                  <Text style={{ fontWeight: "bold", color: "gray" }}>
+                    Venue:{" "}
+                  </Text>
+                  SLIIT Malabe Campus
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Text>
+                  <Text style={{ fontWeight: "bold", color: "gray" }}>
+                    Organized by:{" "}
+                  </Text>
+                  FCSC
+                </Text>
+                <Text>
+                  <Text style={{ fontWeight: "bold", color: "gray" }}>
+                    Contact:{" "}
+                  </Text>
+                  0771234567
+                </Text>
+              </View>
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-around" }}
+              >
+                <Text style={styles.feedbackTittleTxt}>Feedbacks :</Text>
+              </View>
+            </ScrollView>
+            <FlatList
+              data={feedbackData}
+              renderItem={({ item }) => <UserFeedbackCard item={item} />}
+              idExtractor={(item) => item.id}
+              horizontal={true}
+            />
           </View>
-
           <View style={styles.buyTicketSec}>
             <TouchableOpacity
               style={styles.buyTicketBtn}
@@ -93,6 +176,51 @@ const GeneralEventDetails = ({ route }) => {
               <Text style={styles.buyTicketText}>Buy Tickets</Text>
             </TouchableOpacity>
           </View>
+
+          {/* Feedback Modal */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Add Feedback</Text>
+                <TextInput
+                  style={styles.feedbackInput}
+                  placeholder="Your feedback..."
+                  multiline={true}
+                  value={feedback}
+                  onChangeText={(text) => setFeedback(text)}
+                />
+                {/* rating */}
+                <View style={styles.ratingBar}>
+                  <Text>Rating (5)</Text>
+                  <TextInput
+                    style={styles.ratingInput}
+                    placeholder="0"
+                    keyboardType="numeric"
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.submitButton}
+                  onPress={submitFeedback}
+                >
+                  <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+
           <BottomSheetModal
             ref={bottomSheetModalRef}
             index={0}
@@ -101,6 +229,7 @@ const GeneralEventDetails = ({ route }) => {
               borderRadius: width * 0.08,
             }}
           >
+            {/* BottomSheet Content */}
             <View style={styles.bottomSheetContainer}>
               <Text style={styles.bTittle}>Reserve Your Ticket</Text>
               <View style={styles.horizontalLine} />
@@ -147,7 +276,7 @@ const styles = StyleSheet.create({
   },
   darkLayer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Adjust opacity as needed
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   backButton: {
     position: "absolute",
@@ -202,12 +331,29 @@ const styles = StyleSheet.create({
   buyTicketSec: {
     position: "absolute",
     width: "100%",
-    top: height * 0.84,
+    top: height * 0.838,
     alignItems: "center",
     backgroundColor: "rgb(260,120,76)",
     borderTopLeftRadius: width * 0.1,
     borderTopRightRadius: width * 0.1,
     bottom: 0,
+  },
+  ratingBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 8,
+  },
+  feedbackTittleTxt: {
+    fontSize: width * 0.035,
+    fontWeight: "bold",
+    marginTop: height * 0.02,
+  },
+  feeedbackImg: {
+    width: width * 0.07,
+    height: height * 0.04,
+    marginTop: height * 0.02,
+    left: width * 0.03,
   },
   buyTicketBtn: {
     padding: width * 0.03,
@@ -264,5 +410,48 @@ const styles = StyleSheet.create({
     fontSize: width * 0.025,
     left: width * 0.03,
     marginTop: height * 0.02,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  feedbackInput: {
+    height: 80,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
+    padding: 10,
+  },
+  submitButton: {
+    backgroundColor: "#16213E",
+    borderRadius: 5,
+    padding: 10,
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  submitButtonText: {
+    color: "white",
+  },
+  closeButton: {
+    backgroundColor: "rgb(260,120,76)",
+    borderRadius: 5,
+    padding: 10,
+    alignItems: "center",
+  },
+  closeButtonText: {
+    color: "white",
   },
 });
