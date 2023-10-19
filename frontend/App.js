@@ -11,6 +11,8 @@ import GeneralEventDetails from "./screens/generalEventDetails";
 import OrganizerHome from "./screens/organizerhome";
 import { useFonts } from 'expo-font';
 import EventDetails from "./components/myeventdetails";
+import AllEventDetails from "./screens/allEventDetails";
+import PublishSponsorship from "./screens/publishSposorShip";
 const Stack = createStackNavigator();
 
 
@@ -57,6 +59,7 @@ export default function App() {
             options={{ headerShown: false }}
           />
 
+
           <Stack.Screen
             name="organizerhome"
             component={OrganizerHome}
@@ -65,6 +68,18 @@ export default function App() {
           <Stack.Screen
             name="EventDetails"
             component={EventDetails}
+            options={{ headerShown: false }}
+          />
+
+
+          <Stack.Screen
+            name="AllEventDetails"
+            component={AllEventDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="PublishSponsorship"
+            component={PublishSponsorship}
             options={{ headerShown: false }}
           />
 

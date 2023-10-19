@@ -13,14 +13,10 @@ import {
 } from "react-native";
 import UserEventCard from "../components/userEventCard";
 import { useNavigation } from "@react-navigation/native";
-import MapView, { Marker } from "react-native-maps";
-import * as Location from "expo-location";
 
 const { width, height } = Dimensions.get("window");
 
 export default function Home() {
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
   const [eventData, setEventData] = useState([
     {
       id: "1",
@@ -89,61 +85,36 @@ export default function Home() {
     },
   ]);
 
-  // Get user's current location
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
-
   const navigation = useNavigation();
 
   const handleCardPress = (item) => {
     console.log("Card Pressed");
     console.log(item);
-    navigation.navigate("GeneralEventDetails", { item: item });
+    navigation.navigate("AllEventDetails", { item: item });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.topContainer}>
-          {errorMsg ? (
-            <Text>{errorMsg}</Text>
-          ) : location ? (
-            <MapView
-              style={styles.map}
-              initialRegion={{
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-            >
-              <Marker
-                coordinate={{
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
-                }}
-                title="My Location"
-                description="This is where I am"
+          <View style={styles.searchContainer}>
+            <View style={styles.searchWrapper}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search for Events"
               />
-            </MapView>
-          ) : (
-            <Text>Loading...</Text>
-          )}
+            </View>
+            <TouchableOpacity style={styles.searchBtn}>
+              <Image
+                source={require("../assets/images/search.png")}
+                style={styles.searchBtnImage}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
       <View style={styles.bottomContainer}>
-        <Text style={styles.title}>Upcoming Events</Text>
-
         <FlatList
           data={eventData}
           renderItem={({ item }) => (
@@ -166,27 +137,47 @@ const styles = StyleSheet.create({
   topContainer: {
     flex: 1,
   },
-
-  map: {
-    top: height * 0.035,
-    width: width * 1,
-    height: 300, // Set a fixed height for the map
+  searchContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    marginTop: height * 0.02,
+    height: height * 0.08,
   },
-  headerText: {
-    fontWeight: "bold",
-    fontSize: width * 0.06,
+  searchWrapper: {
+    flex: 2,
+    backgroundColor: "#D9D9D9",
+    marginRight: width * 0.02,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: height * 0.04,
+    height: "80%",
+  },
+  searchInput: {
+    width: "100%",
+    height: "80%",
+    paddingHorizontal: width * 0.04,
+    marginLeft: width * 0.02,
+    borderRadius: height * 0.04,
+  },
+  searchBtn: {
+    width: width * 0.11,
+    height: "70%",
+    backgroundColor: "#9CC5FF",
+    borderRadius: height * 0.013,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: width * 0.02,
+  },
+  searchBtnImage: {
+    width: "35%",
+    height: "50%",
+    tintColor: "white",
   },
   bottomContainer: {
-    flex: 6,
-    shadowColor: "#000",
+    flex: 18,
     marginHorizontal: width * 0.02,
     borderRadius: height * 0.04,
-    marginBottom: height * 0.02,
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: width * 0.06,
-    marginHorizontal: width * 0.02,
     marginBottom: height * 0.02,
   },
   flatListContent: {

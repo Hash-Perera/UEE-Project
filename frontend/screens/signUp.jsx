@@ -55,6 +55,7 @@ const SignUp = () => {
               </TouchableOpacity>
               <Text style={styles.tittle}>Create{"\n"} Account</Text>
             </View>
+
             <View style={styles.formContainer}>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -104,6 +105,7 @@ const SignUp = () => {
                   style={styles.input}
                 />
               </View>
+
               <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.registerButton}>
                   <Text style={styles.registerButtonText}>Register</Text>

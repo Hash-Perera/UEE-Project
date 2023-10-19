@@ -7,28 +7,48 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
 const UserEventCard = ({ item, handleCardPress }) => {
+  const totalStars = 5;
+
   return (
-    <TouchableOpacity onPress={() => handleCardPress(item.key)}>
+    <TouchableOpacity onPress={() => handleCardPress(item.id)}>
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
           <Image
-            source={require("../assets/images/sampleEvent.jpeg")}
+            source={item.eventImage}
             resizeMode="contain"
             style={styles.image}
           />
         </View>
         <View style={styles.detailsContainer}>
-          <Text style={styles.title}>Event Name</Text>
-          <Text>Event Date: 23/04/2024</Text>
-          <Text>Event Location: Kurunagala</Text>
-          <Text>Time: 19:00</Text>
+          <Text style={styles.title}>{item.eventName}</Text>
+          <Text>Event Date: {item.eventDate}</Text>
+          <Text>Event Location: {item.eventlocation}</Text>
+          <Text>Time: {item.eventTime}</Text>
+          <View style={styles.ratingBar}>
+            {Array.from({ length: item.gainStars }, (x, i) => {
+              return (
+                <MaterialIcons key={i} name="star" size={30} color="#FFA000" />
+              );
+            })}
+
+            {Array.from({ length: totalStars - item.gainStars }, (x, i) => {
+              return (
+                <MaterialIcons
+                  key={i}
+                  name="star-border"
+                  size={30}
+                  color="#FFA000"
+                />
+              );
+            })}
+          </View>
         </View>
       </View>
-      {/*  <View style={styles.horizontalLine} /> */}
     </TouchableOpacity>
   );
 };
@@ -39,17 +59,15 @@ const styles = StyleSheet.create({
   cardContainer: {
     marginTop: height * 0.01,
     flexDirection: "row",
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#ECF2FF",
     borderRadius: width * 0.04,
     padding: width * 0.02,
   },
   imageContainer: {
     flex: 1,
-    height: width * 0.38,
+    height: width * 0.4,
     width: width * 0.4,
     overflow: "hidden",
-    margin: width * 0.0,
-    marginTop: height * 0.001,
   },
   image: {
     flex: 1,
@@ -59,15 +77,15 @@ const styles = StyleSheet.create({
   detailsContainer: {
     flex: 1,
     margin: width * 0.02,
-    gap: height * 0.02,
+    gap: height * 0.01,
   },
   title: {
     fontSize: width * 0.05,
     fontWeight: "bold",
   },
-  horizontalLine: {
-    borderBottomColor: "gray",
-    borderBottomWidth: 0.4,
-    marginVertical: height * 0.01,
+  ratingBar: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-start",
   },
 });
