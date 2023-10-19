@@ -8,10 +8,25 @@ import Login from "./screens/login";
 import SignUp from "./screens/signUp";
 import GetStarted from "./screens/getStarted";
 import GeneralEventDetails from "./screens/generalEventDetails";
-
+import OrganizerHome from "./screens/organizerhome";
+import { useFonts } from 'expo-font';
+import EventDetails from "./components/myeventdetails";
 const Stack = createStackNavigator();
 
+
+
+
 export default function App() {
+  const [fontloaded] = useFonts({
+    DMBold: require('./assets/fonts/DMSans-Bold.ttf'),
+    DMMedium: require('./assets/fonts/DMSans-Medium.ttf'),
+    DMRegular: require('./assets/fonts/DMSans-Regular.ttf'),
+  });
+  if (!fontloaded) {
+    return null;
+  }
+
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <NavigationContainer>
@@ -41,6 +56,18 @@ export default function App() {
             component={GeneralEventDetails}
             options={{ headerShown: false }}
           />
+
+          <Stack.Screen
+            name="organizerhome"
+            component={OrganizerHome}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="EventDetails"
+            component={EventDetails}
+            options={{ headerShown: false }}
+          />
+
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>

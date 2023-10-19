@@ -12,6 +12,7 @@ import Home from "../screens/home";
 import { Ionicons } from "@expo/vector-icons";
 import ProfIcon from "../assets/images/user.png";
 import { COLORS } from "../constraints/constants";
+import OrganizerHome from "../screens/organizerhome";
 
 export default function GeneralNavigation() {
   const Drawer = createDrawerNavigator();
@@ -97,6 +98,15 @@ export default function GeneralNavigation() {
           title: "Settings",
         }}
         component={Setting}
+      />
+
+      <Drawer.Screen
+        name="Organizerhome"
+        options={{
+          drawerLabel: "Organizer Home",
+          title: "Organizer Home",
+        }}
+        component={OrganizerHome}
       />
     </Drawer.Navigator>
   );
