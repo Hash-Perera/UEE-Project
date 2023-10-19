@@ -9,6 +9,11 @@ import Contact from "../screens/contact";
 import Backup from "../screens/backup";
 import Setting from "../screens/setting";
 import Home from "../screens/home";
+import AllEvents from "../screens/allEvents";
+import FeedbackOrg from "../screens/feedbackOrg";
+import AnalyticsOrg from "../screens/analyticsOrg";
+import SponsorDash from "../screens/sponsorDash";
+import ReqSponsor from "../screens/reqSponsor";
 import { Ionicons } from "@expo/vector-icons";
 import ProfIcon from "../assets/images/user.png";
 import { COLORS } from "../constraints/constants";
@@ -97,6 +102,46 @@ export default function GeneralNavigation() {
           title: "Settings",
         }}
         component={Setting}
+      />
+      <Drawer.Screen
+        name="All Events"
+        options={{
+          drawerLabel: "All Events",
+          title: "All Events",
+        }}
+        component={AllEvents}
+      />
+      <Drawer.Screen
+        name="Sponsor Dashboard"
+        options={{
+          drawerLabel: "Sponsor Dashboard",
+          title: "Sponsor Dashboard",
+        }}
+        component={SponsorDash}
+      />
+      <Drawer.Screen
+        name="All Feedbacks"
+        options={{
+          drawerLabel: "Feedbacks",
+          title: "Feedbacks",
+        }}
+        component={FeedbackOrg}
+      />
+      <Drawer.Screen
+        name="Analytics"
+        options={{
+          drawerLabel: "Analytics",
+          title: "Analytics",
+        }}
+        component={AnalyticsOrg}
+      />
+      <Drawer.Screen
+        name="Request Sponsor"
+        options={{
+          drawerLabel: "Request Sponsor",
+          title: "Request Sponsor",
+        }}
+        component={ReqSponsor}
       />
     </Drawer.Navigator>
   );
