@@ -5,15 +5,13 @@ import {
   DrawerItemList,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
-import Contact from "../screens/contact";
-import Backup from "../screens/backup";
-import Setting from "../screens/setting";
 import Home from "../screens/home";
 import AllEvents from "../screens/allEvents";
 import FeedbackOrg from "../screens/feedbackOrg";
 import AnalyticsOrg from "../screens/analyticsOrg";
 import SponsorDash from "../screens/sponsorDash";
 import ReqSponsor from "../screens/reqSponsor";
+import PublishAllSponsors from "../screens/publishAllSponsors";
 import { Ionicons } from "@expo/vector-icons";
 import ProfIcon from "../assets/images/user.png";
 import { COLORS } from "../constraints/constants";
@@ -81,39 +79,13 @@ export default function GeneralNavigation() {
         component={Home}
       />
       <Drawer.Screen
-        name="Contacts"
-        options={{
-          drawerLabel: "Contact",
-          title: "Contact",
-        }}
-        component={Contact}
-      />
-      <Drawer.Screen
-        name="Backup"
-        options={{
-          drawerLabel: "Backup",
-          title: "Contact",
-        }}
-        component={Backup}
-      />
-      <Drawer.Screen
-        name="Settings"
-        options={{
-          drawerLabel: "Settings",
-          title: "Settings",
-        }}
-        component={Setting}
-      />
-
-
-      <Drawer.Screen
         name="Organizerhome"
         options={{
           drawerLabel: "Organizer Home",
           title: "Organizer Home",
         }}
         component={OrganizerHome}
-
+      />
       <Drawer.Screen
         name="All Events"
         options={{
@@ -153,7 +125,14 @@ export default function GeneralNavigation() {
           title: "Request Sponsor",
         }}
         component={ReqSponsor}
-
+      />
+      <Drawer.Screen
+        name="Publish All Sponsors "
+        options={{
+          drawerLabel: "Publish All Sponsors",
+          title: "Publish All Sponsors",
+        }}
+        component={PublishAllSponsors}
       />
     </Drawer.Navigator>
   );
