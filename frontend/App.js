@@ -13,6 +13,9 @@ import { useFonts } from 'expo-font';
 import EventDetails from "./components/myeventdetails";
 import AllEventDetails from "./screens/allEventDetails";
 import PublishSponsorship from "./screens/publishSposorShip";
+import PastEventDetails from "./components/pasteventdetails";
+import EventForm from "./components/createevent";
+import UpdateEvent from "./components/updateevent";
 const Stack = createStackNavigator();
 
 
@@ -71,6 +74,24 @@ export default function App() {
             options={{ headerShown: false }}
           />
 
+          <Stack.Screen
+            name="PastEventDetails"
+            component={PastEventDetails}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="EventForm"
+            component={EventForm}
+            options={{ headerShown: false }}
+          />
+           <Stack.Screen
+            name="UpdateEvent"
+            component={UpdateEvent}
+            options={{ headerShown: false }}
+          />
+
+
 
           <Stack.Screen
             name="AllEventDetails"
@@ -82,6 +103,8 @@ export default function App() {
             component={PublishSponsorship}
             options={{ headerShown: false }}
           />
+
+
 
         </Stack.Navigator>
       </NavigationContainer>

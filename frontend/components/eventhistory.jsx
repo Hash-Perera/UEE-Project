@@ -9,10 +9,12 @@ import {
     StyleSheet,
     ScrollView,
     TextInput,
-    Image
+    Image,
 
 } from 'react-native';
 import Pasteventcard from "./pasteventcard";
+import { useNavigation } from "@react-navigation/native";
+
 
 
 
@@ -22,6 +24,11 @@ const { width, height } = Dimensions.get("window");
 
 
 const Mypastevents = () => {
+
+    const navigation=useNavigation();
+
+    const [searchQuery, setSearchQuery] = useState("");
+
 
     const [pastevents, setpastevents] = useState([
         {
@@ -33,7 +40,13 @@ const Mypastevents = () => {
             venue: "SLIIT malabe campus",
             eventtype: "concert",
             soldTickets: "500",
-            alltickets: "3000"
+            alltickets: "3000",
+            images: [
+                require('../assets/images/event1.jpg'),
+                require('../assets/images/event2.jpg'),
+            ],
+            description:"the main concert in the SLIIT campus"
+        
         },
         {
             eventid: 2,
@@ -44,7 +57,13 @@ const Mypastevents = () => {
             venue: "Epitome Kurunegala",
             eventtype: "indoor concert",
             soldTickets: "500",
-            alltickets: "3000"
+            alltickets: "3000",
+            images: [
+                require('../assets/images/event1.jpg'),
+                require('../assets/images/event2.jpg'),
+            ],
+            description:"the main concert in the SLIIT campus"
+        
         },
         {
             eventid: 3,
@@ -55,20 +74,31 @@ const Mypastevents = () => {
             venue: "SLIIT malabe campus",
             eventtype: "concert",
             soldTickets: "800",
-            alltickets: "3000"
+            alltickets: "3000",
+            images: [
+                require('../assets/images/event1.jpg'),
+                require('../assets/images/event2.jpg'),
+            ],
+            description:"the main concert in the SLIIT campus"
+        
         }
 
-
-
-
-
-
     ]);
+
+    const [filteredventhistory, setFilteredeventhistory] = useState(pastevents);
+
+  const handleSearch = () => {
+    const filtered = pastevents.filter((item) =>
+      item.eventname.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredeventhistory(filtered);
+  };
 
 
 
     function handleCardPress(event) {
-        console.log("card pressed:", event)
+        console.log("card pressed:", event);
+        navigation.navigate("PastEventDetails", { pastevent: event });
 
     }
 
@@ -85,9 +115,11 @@ const Mypastevents = () => {
                             <TextInput
                                 style={styles.searchInput}
                                 placeholder="Search events"
+                                onChangeText={(text)=>setSearchQuery(text)}
+                                value={searchQuery}
                             />
                         </View>
-                        <TouchableOpacity style={styles.searchBtn}>
+                        <TouchableOpacity style={styles.searchBtn} onPress={handleSearch}>
                             <Image
                                 source={require("../assets/images/search.png")}
                                 style={styles.searchBtnImage}
@@ -97,15 +129,15 @@ const Mypastevents = () => {
                     </View>
                 </View>
 
-               
+
             </ScrollView>
 
             <View style={styles.eventcontainer}>
 
 
 
-               <FlatList
-                    data={pastevents}
+                <FlatList
+                    data={filteredventhistory}
                     renderItem={({ item }) => (
                         <Pasteventcard
 
@@ -119,7 +151,7 @@ const Mypastevents = () => {
 
 
 
-                    />
+                />
 
 
 

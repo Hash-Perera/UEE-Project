@@ -78,6 +78,8 @@ export default function GeneralNavigation() {
         }}
         component={Home}
       />
+
+ 
       <Drawer.Screen
         name="Organizerhome"
         options={{
@@ -85,7 +87,10 @@ export default function GeneralNavigation() {
           title: "Organizer Home",
         }}
         component={OrganizerHome}
-      />
+
+        />
+
+ 
       <Drawer.Screen
         name="All Events"
         options={{
