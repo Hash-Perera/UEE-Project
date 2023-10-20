@@ -13,6 +13,8 @@ import {
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
+import { Provider } from "react-native-paper";
+import DropDown from "react-native-paper-dropdown";
 const { width, height } = Dimensions.get("window");
 import UserFeedbackCard from "../components/userFeedbackCard";
 
@@ -68,6 +70,32 @@ const GeneralEventDetails = ({ route }) => {
     /* navigate to back */
     navigation.goBack();
   };
+
+  const [showDropDown, setShowDropDown] = useState(false);
+  const [ratingValue, setratingValue] = useState("");
+
+  const ratings = [
+    {
+      label: "1",
+      value: "1",
+    },
+    {
+      label: "2",
+      value: "2",
+    },
+    {
+      label: "3",
+      value: "3",
+    },
+    {
+      label: "4",
+      value: "4",
+    },
+    {
+      label: "5",
+      value: "5",
+    },
+  ];
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -165,40 +193,47 @@ const GeneralEventDetails = ({ route }) => {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Add Feedback</Text>
-              <TextInput
-                style={styles.feedbackInput}
-                placeholder="Your feedback..."
-                multiline={true}
-                value={feedback}
-                onChangeText={(text) => setFeedback(text)}
-              />
-              {/* rating */}
-              <View style={styles.ratingBar}>
-                <Text>Rating (5)</Text>
+          <Provider>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Add Feedback</Text>
                 <TextInput
-                  style={styles.ratingInput}
-                  placeholder="0"
-                  maxlength={1}
-                  keyboardType="numeric"
+                  style={styles.feedbackInput}
+                  placeholder="Your feedback..."
+                  multiline={true}
+                  value={feedback}
+                  onChangeText={(text) => setFeedback(text)}
                 />
+                {/* rating */}
+                <View style={styles.ratingBar}>
+                  <Text>Rating (5)</Text>
+                  <DropDown
+                    label={"Rating"}
+                    mode={"outlined"}
+                    visible={showDropDown}
+                    showDropDown={() => setShowDropDown(true)}
+                    onDismiss={() => setShowDropDown(false)}
+                    value={ratingValue}
+                    setValue={setratingValue}
+                    list={ratings}
+                    style={styles.input}
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.submitButton}
+                  onPress={submitFeedback}
+                >
+                  <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={styles.submitButton}
-                onPress={submitFeedback}
-              >
-                <Text style={styles.submitButtonText}>Submit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
             </View>
-          </View>
+          </Provider>
         </Modal>
       </View>
     </SafeAreaView>

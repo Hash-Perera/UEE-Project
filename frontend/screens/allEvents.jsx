@@ -13,10 +13,10 @@ import {
 } from "react-native";
 import UserEventCard from "../components/userEventCard";
 import { useNavigation } from "@react-navigation/native";
-
 const { width, height } = Dimensions.get("window");
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
   const [eventData, setEventData] = useState([
     {
       id: "1",
@@ -84,7 +84,14 @@ export default function Home() {
       eventOrganizer: "SLIIT",
     },
   ]);
+  const [filteredData, setFilteredData] = useState(eventData);
 
+  const handleSearch = () => {
+    const filtered = eventData.filter((item) =>
+      item.eventName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
   const navigation = useNavigation();
 
   const handleCardPress = (item) => {
@@ -101,10 +108,12 @@ export default function Home() {
             <View style={styles.searchWrapper}>
               <TextInput
                 style={styles.searchInput}
+                onChangeText={(text) => setSearchQuery(text)}
+                value={searchQuery}
                 placeholder="Search for Events"
               />
             </View>
-            <TouchableOpacity style={styles.searchBtn}>
+            <TouchableOpacity style={styles.searchBtn} onPress={handleSearch}>
               <Image
                 source={require("../assets/images/search.png")}
                 style={styles.searchBtnImage}
@@ -116,7 +125,7 @@ export default function Home() {
       </ScrollView>
       <View style={styles.bottomContainer}>
         <FlatList
-          data={eventData}
+          data={filteredData}
           renderItem={({ item }) => (
             <UserEventCard item={item} handleCardPress={handleCardPress} />
           )}
