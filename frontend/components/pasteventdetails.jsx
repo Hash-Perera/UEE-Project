@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState } from "react";
 import {
     Text,
     SafeAreaView,
@@ -10,17 +10,23 @@ import {
     Dimensions,
     StyleSheet
 } from 'react-native';
-import { useNavigation } from "@react-navigation/native";
+import { SegmentedButtons } from 'react-native-paper';
+import Mypastevents from "./eventhistory";
+import FeedCard from "./feedCard";
+import EventFeedbacks from "./eventfeedbacks";
+import EventAnalytics from "./eventanalytics";
 
 const { width, height } = Dimensions.get("window");
 
 
+const PastEventDetails = ({ route }) => {
+
+    const [value, setValue] = useState('');
+
+    const { pastevent } = route.params;
 
 
-const EventDetails = ({ route }) => {
 
-    const { event } = route.params;
-    const navigation=useNavigation();
 
     const renderItem = ({ item }) => (
         <View style={styles.imageContainer}>
@@ -34,22 +40,18 @@ const EventDetails = ({ route }) => {
     );
 
 
-    function updateevent(){
-        navigation.navigate("UpdateEvent",{eventToUpdate:event})
-
-    }
-
-
 
 
 
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
+
             <ScrollView style={styles.scrollViewContent}>
+
                 <View>
                     <FlatList
-                        data={event.images}
+                        data={pastevent.images}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={renderItem}
 
@@ -68,7 +70,7 @@ const EventDetails = ({ route }) => {
                         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
                             <View style={{ flexDirection: "row", gap: 6, marginTop: height * 0.02 }}>
                                 <Text style={styles.eventtitle}>Date:</Text>
-                                <Text style={styles.eventdetails}> {event.date}</Text>
+                                <Text style={styles.eventdetails}> {pastevent.date}</Text>
                             </View>
 
                         </View>
@@ -76,7 +78,7 @@ const EventDetails = ({ route }) => {
 
                         <View style={{ flexDirection: "row", gap: 6, marginTop: height * 0.02 }}>
                             <Text style={styles.eventtitle}>Event Name:</Text>
-                            <Text style={styles.eventdetails}> {event.eventname}</Text>
+                            <Text style={styles.eventdetails}> {pastevent.eventname}</Text>
                         </View>
 
 
@@ -84,49 +86,84 @@ const EventDetails = ({ route }) => {
 
                         <View style={{ flexDirection: "row", gap: 6, marginTop: height * 0.02 }}>
                             <Text style={styles.eventtitle}>Venue:</Text>
-                            <Text style={styles.eventdetails}> {event.venue}</Text>
+                            <Text style={styles.eventdetails}> {pastevent.venue}</Text>
                         </View>
                         <View style={{ gap: 10, marginTop: height * 0.05 }}>
                             <Text style={styles.eventtitle}>Event Description:</Text>
-                            <Text style={styles.eventdescription}> {event.description}</Text>
+                            <Text style={styles.eventdescription}> {pastevent.description}</Text>
                         </View>
                         <View style={{ gap: 10, marginTop: height * 0.05 }}>
                             <Text style={styles.eventtitle}>Time:</Text>
-                            <Text style={styles.eventdescription}> {event.time}</Text>
+                            <Text style={styles.eventdescription}> {pastevent.time}</Text>
                         </View>
 
 
 
                         <View style={styles.ticketcontainer}>
-                            <Text style={{color:"grey",fontWeight:"bold",fontSize:14}}>Tickets : </Text>
+                            <Text style={{ color: "grey", fontWeight: "bold", fontSize: 14 }}>Tickets : </Text>
                             <View style={styles.soldticket}>
-                                <Text style={styles.soldtickettext} numberOfLines={1}>{event.soldTickets} sold</Text>
+                                <Text style={styles.soldtickettext} numberOfLines={1}>{pastevent.soldTickets} sold</Text>
                             </View>
                             <View style={styles.alltickets}>
-                                <Text style={styles.alltickettext} numberOfLines={1}>{event.alltickets} available</Text>
+                                <Text style={styles.alltickettext} numberOfLines={1}>{pastevent.alltickets} available</Text>
                             </View>
                         </View>
 
 
-                   
 
 
 
 
-                    <View style={{ flexDirection: "row", gap: 15, marginLeft: width * 0.1 }}>
-                        <TouchableOpacity style={styles.updateButton} onPress={updateevent}>
-                            <Text style={styles.updateButtonText}>Update</Text>
-                        </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.DeleteButton}>
-                            <Text style={styles.DeleteButtonText}>Delete</Text>
-                        </TouchableOpacity>
+
+                        <View style={styles.segment}>
+                            <SegmentedButtons
+                                value={value}
+
+                                onValueChange={setValue}
+                                buttons={[
+                                    {
+                                        value: 'Feedbacks',
+                                        label: 'Feedbacks',
+                                    },
+                                    {
+                                        value: 'eventanalytics',
+                                        label: 'Event Analytics',
+                                    },
+
+
+                                ]}
+                            />
+
+
+                        </View>
                     </View>
+
+
+
+                    {value === 'eventanalytics' && (
+                        <EventAnalytics pastevent={pastevent} />
+                    )}
+                   {/* {value === 'Feedbacks' && (
+
+                        <EventFeedbacks />
+                   )}*/}
+
+
 
                 </View>
 
-            </View>
-        </ScrollView>
+
+            </ScrollView>
+
+
+
+
+
+
+
+
+
         </SafeAreaView >
 
 
@@ -144,7 +181,7 @@ const EventDetails = ({ route }) => {
 }
 
 
-export default EventDetails;
+export default PastEventDetails;
 
 
 

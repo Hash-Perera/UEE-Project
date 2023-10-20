@@ -21,7 +21,11 @@ const { width, height } = Dimensions.get("window");
 
 
 const Myevents = () => {
+
+
     const navigation = useNavigation();
+    const [searchQuery, setSearchQuery] = useState("");
+    
 
 
 
@@ -40,7 +44,10 @@ const Myevents = () => {
                 require('../assets/images/event1.jpg'),
                 require('../assets/images/event2.jpg'),
             ],
-            description:"the main concert in the SLIIT campus"
+            description: "the main concert in the SLIIT campus",
+            ticketcount: 2000,
+            expectedcrowd: 3000,
+            expectedbudget: 500000
         },
         {
             eventid: 2,
@@ -57,7 +64,10 @@ const Myevents = () => {
                 require('../assets/images/event2.jpg'),
 
             ],
-            description:"largest concert in the sri lanka"
+            description: "largest concert in the sri lanka",
+            ticketcount: "2000",
+            expectedcrowd: "3000",
+            expectedbudget: "500000"
         },
         {
             eventid: 3,
@@ -73,7 +83,10 @@ const Myevents = () => {
                 require('../assets/images/event1.jpg'),
                 require('../assets/images/event2.jpg'),
             ],
-            description:"the main concert in the SLIIT campus"
+            description: "the main concert in the SLIIT campus",
+            ticketcount: "2000",
+            expectedcrowd: "3000",
+            expectedbudget: "500000"
         }
 
 
@@ -83,13 +96,25 @@ const Myevents = () => {
 
     ]);
 
+    const [filteredmyevents, setFilteredmyevents] = useState(events);
+
+    const handleSearch = () => {
+        const filtered = events.filter((item) =>
+          item.eventname.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredmyevents(filtered);
+      };
+
 
 
     function handleCardPress(event) {
         console.log("card pressed:", event);
         navigation.navigate("EventDetails", { event: event });
 
+    }
 
+    function Createevent() {
+        navigation.navigate("EventForm")
 
     }
 
@@ -106,9 +131,11 @@ const Myevents = () => {
                             <TextInput
                                 style={styles.searchInput}
                                 placeholder="Search events"
+                                onChangeText={(text)=>setSearchQuery(text)}
+                                value={searchQuery}
                             />
                         </View>
-                        <TouchableOpacity style={styles.searchBtn}>
+                        <TouchableOpacity style={styles.searchBtn} onPress={handleSearch}>
                             <Image
                                 source={require("../assets/images/search.png")}
                                 style={styles.searchBtnImage}
@@ -119,7 +146,7 @@ const Myevents = () => {
                 </View>
 
                 <View style={styles.iconcontainer} >
-                    <TouchableOpacity style={styles.addicon} >
+                    <TouchableOpacity style={styles.addicon} onPress={Createevent} >
                         <Image
                             source={require("../assets/images/circleplus.png")}
                             style={styles.addiconimage}
@@ -141,7 +168,7 @@ const Myevents = () => {
 
 
                 <FlatList
-                    data={events}
+                    data={filteredmyevents}
                     renderItem={({ item }) => (
                         <Eventcard
 

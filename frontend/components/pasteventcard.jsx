@@ -14,22 +14,19 @@ const Pasteventcard = ({ item, handleCardPress }) => {
         {item.eventname}
       </Text>
       <View style={styles.details}>
-        <View style={styles.eventcontainer}>
-          <Text style={styles.detailText}>{item.venue}</Text>
-          <Text style={styles.detailText}>{item.eventtype}</Text>
-        </View>
+        <Text style={styles.detailText}>{item.venue}</Text>
+        <Text style={styles.detailText}>{item.eventtype}</Text>
         <Text style={styles.detailText}>{item.date}</Text>
-
-        <View style={styles.ticketcontainer}>
-          <View style={styles.soldticket}>
-            <Text style={styles.tickettext} numberOfLines={1}>{item.soldTickets} sold</Text>
-          </View>
-          <View style={styles.alltickets}>
-            <Text style={styles.tickettext} numberOfLines={1}>{item.alltickets} available</Text>
-          </View>
+      </View>
+      <View style={styles.ticketcontainer}>
+        <View style={styles.ticketItem}>
+          <Text style={styles.ticketLabel}>Sold Tickets:</Text>
+          <Text style={styles.ticketValue}>{item.soldTickets} sold</Text>
         </View>
-
-        
+        <View style={styles.ticketItem}>
+          <Text style={styles.ticketLabel}>Available Tickets:</Text>
+          <Text style={styles.ticketValue}>{item.alltickets} available</Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -37,7 +34,7 @@ const Pasteventcard = ({ item, handleCardPress }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#E1F5FE',
     padding: 16,
     borderRadius: 8,
     margin: 8,
@@ -61,58 +58,31 @@ const styles = StyleSheet.create({
   },
   details: {
     marginTop: 8,
-
   },
   detailText: {
     fontSize: 14,
     color: '#555',
     fontFamily: "DMRegular"
   },
-  eventcontainer: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
   ticketcontainer: {
-
     flexDirection: "row",
-    gap: width * 0.06,
-    alignContent: "center",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  ticketItem: {
     alignItems: "center",
-    marginLeft: width * 0.15,
-    marginTop: 15,
-    marginBottom: 10
-
   },
-  tickettext: {
+  ticketLabel: {
+    fontSize: 14,
+    color: '#555',
+    fontFamily: "DMRegular",
+  },
+  ticketValue: {
     fontSize: 16,
-    color:"#ffffff",
-    shadowColor:'#000',
+    fontWeight: "bold",
+    color: '#16213E',
     fontFamily: "DMMedium",
-    textShadowColor: "black",
-    marginLeft: width * 0.02,
-    marginRight:width*0.005,
-    marginTop:height*0.01,
-    
-   
   },
-  soldticket: {
-    backgroundColor: '#406882',
-    width: width * 0.22,
-    height:width*0.08,
-    borderRadius: width * 0.5,
-   
-    
-  },
-
-  alltickets: {
-
-    backgroundColor: '#16213E',
-    width: width * 0.32,
-    height:height*0.04,
-    borderRadius: width * 0.2,
-
-
-  }
 });
 
 export default Pasteventcard;

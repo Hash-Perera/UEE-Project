@@ -80,32 +80,7 @@ export default function GeneralNavigation() {
         }}
         component={Home}
       />
-      <Drawer.Screen
-        name="Contacts"
-        options={{
-          drawerLabel: "Contact",
-          title: "Contact",
-        }}
-        component={Contact}
-      />
-      <Drawer.Screen
-        name="Backup"
-        options={{
-          drawerLabel: "Backup",
-          title: "Contact",
-        }}
-        component={Backup}
-      />
-      <Drawer.Screen
-        name="Settings"
-        options={{
-          drawerLabel: "Settings",
-          title: "Settings",
-        }}
-        component={Setting}
-      />
-
-
+     
       <Drawer.Screen
         name="Organizerhome"
         options={{
@@ -113,6 +88,7 @@ export default function GeneralNavigation() {
           title: "Organizer Home",
         }}
         component={OrganizerHome}
+        />
 
       <Drawer.Screen
         name="All Events"
