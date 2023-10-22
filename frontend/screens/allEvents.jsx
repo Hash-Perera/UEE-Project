@@ -13,85 +13,112 @@ import {
 } from "react-native";
 import UserEventCard from "../components/userEventCard";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 const { width, height } = Dimensions.get("window");
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [eventData, setEventData] = useState([
-    {
-      id: "1",
-      eventName: "Wiramaya",
-      eventImage: require("../assets/images/sampleEvent.jpeg"),
-      eventDate: "23/04/2024",
-      eventlocation: "Kandy",
-      eventTime: "7:00 AM",
-      gainStars: 2,
-      eventDescription:
-        "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
-      eventContact: "0712345678",
-      eventOrganizer: "SLIIT",
-    },
-    {
-      id: "2",
-      eventName: "MoraExplorers",
-      eventImage: require("../assets/images/sampleEvent.jpeg"),
-      eventDate: "22/10/2024",
-      eventlocation: "Moratuwa",
-      eventTime: "10:00 AM",
-      gainStars: 4,
-      eventDescription:
-        "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
-      eventContact: "0712345678",
-      eventOrganizer: "SLIIT",
-    },
-    {
-      id: "3",
-      eventName: "CodeFest",
-      eventImage: require("../assets/images/sampleEvent.jpeg"),
-      eventDate: "02/07/2024",
-      eventlocation: "malabe",
-      eventTime: "9:00 AM",
-      gainStars: 5,
-      eventDescription:
-        "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
-      eventContact: "0712345678",
-      eventOrganizer: "SLIIT",
-    },
-    {
-      id: "4",
-      eventName: "sahana",
-      eventDate: "03/04/2024",
-      eventImage: require("../assets/images/sampleEvent.jpeg"),
-      eventlocation: "Kandy",
-      eventTime: "5:00 AM",
-      gainStars: 4,
-      eventDescription:
-        "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
-      eventContact: "0712345678",
-      eventOrganizer: "SLIIT",
-    },
-    {
-      id: "5",
-      eventName: "Tharunyata Hetak",
-      eventImage: require("../assets/images/sampleEvent.jpeg"),
-      eventDate: "27/04/2024",
-      eventlocation: "colombo",
-      eventTime: "5:00 AM",
-      gainStars: 4,
-      eventDescription:
-        "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
-      eventContact: "0712345678",
-      eventOrganizer: "SLIIT",
-    },
+    // {
+    //   id: "1",
+    //   eventName: "Wiramaya",
+    //   eventImage: require("../assets/images/sampleEvent.jpeg"),
+    //   eventDate: "23/04/2024",
+    //   eventlocation: "Kandy",
+    //   eventTime: "7:00 AM",
+    //   gainStars: 2,
+    //   eventDescription:
+    //     "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
+    //   eventContact: "0712345678",
+    //   eventOrganizer: "SLIIT",
+    // },
+    // {
+    //   id: "2",
+    //   eventName: "MoraExplorers",
+    //   eventImage: require("../assets/images/sampleEvent.jpeg"),
+    //   eventDate: "22/10/2024",
+    //   eventlocation: "Moratuwa",
+    //   eventTime: "10:00 AM",
+    //   gainStars: 4,
+    //   eventDescription:
+    //     "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
+    //   eventContact: "0712345678",
+    //   eventOrganizer: "SLIIT",
+    // },
+    // {
+    //   id: "3",
+    //   eventName: "CodeFest",
+    //   eventImage: require("../assets/images/sampleEvent.jpeg"),
+    //   eventDate: "02/07/2024",
+    //   eventlocation: "malabe",
+    //   eventTime: "9:00 AM",
+    //   gainStars: 5,
+    //   eventDescription:
+    //     "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
+    //   eventContact: "0712345678",
+    //   eventOrganizer: "SLIIT",
+    // },
+    // {
+    //   id: "4",
+    //   eventName: "sahana",
+    //   eventDate: "03/04/2024",
+    //   eventImage: require("../assets/images/sampleEvent.jpeg"),
+    //   eventlocation: "Kandy",
+    //   eventTime: "5:00 AM",
+    //   gainStars: 4,
+    //   eventDescription:
+    //     "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
+    //   eventContact: "0712345678",
+    //   eventOrganizer: "SLIIT",
+    // },
+    // {
+    //   id: "5",
+    //   eventName: "Tharunyata Hetak",
+    //   eventImage: require("../assets/images/sampleEvent.jpeg"),
+    //   eventDate: "27/04/2024",
+    //   eventlocation: "colombo",
+    //   eventTime: "5:00 AM",
+    //   gainStars: 4,
+    //   eventDescription:
+    //     "The SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka. SLIIT was established in 1999 to educate and train IT professionals required by the fast growing IT industry in Sri Lanka.",
+    //   eventContact: "0712345678",
+    //   eventOrganizer: "SLIIT",
+    // },
   ]);
+  useEffect(() => {
+    getAllEvents();
+  }, []);
+
+  const getAllEvents = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .get("/event/all", apiConfig)
+      .then((response) => {
+        setEventData(response.data);
+        console.log(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   const [filteredData, setFilteredData] = useState(eventData);
 
-  const handleSearch = () => {
-    const filtered = eventData.filter((item) =>
-      item.eventName.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredData(filtered);
-  };
+  // const handleSearch = () => {
+  //   const filtered = eventData.filter((item) =>
+  //     item.eventName.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
+  //   setFilteredData(filtered);
+  // };
   const navigation = useNavigation();
 
   const handleCardPress = (item) => {
@@ -113,7 +140,7 @@ export default function Home() {
                 placeholder="Search for Events"
               />
             </View>
-            <TouchableOpacity style={styles.searchBtn} onPress={handleSearch}>
+            <TouchableOpacity style={styles.searchBtn}>
               <Image
                 source={require("../assets/images/search.png")}
                 style={styles.searchBtnImage}
@@ -124,15 +151,17 @@ export default function Home() {
         </View>
       </ScrollView>
       <View style={styles.bottomContainer}>
-        <FlatList
-          data={filteredData}
-          renderItem={({ item }) => (
-            <UserEventCard item={item} handleCardPress={handleCardPress} />
-          )}
-          idExtractor={(item) => item.id}
-          horizontal={false}
-          contentContainerStyle={styles.flatListContent}
-        />
+        {eventData && (
+          <FlatList
+            data={eventData}
+            renderItem={({ item }) => (
+              <UserEventCard item={item} handleCardPress={handleCardPress} />
+            )}
+            idExtractor={(item) => item._id}
+            horizontal={false}
+            contentContainerStyle={styles.flatListContent}
+          />
+        )}
       </View>
     </SafeAreaView>
   );

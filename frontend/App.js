@@ -9,28 +9,27 @@ import SignUp from "./screens/signUp";
 import GetStarted from "./screens/getStarted";
 import GeneralEventDetails from "./screens/generalEventDetails";
 import OrganizerHome from "./screens/organizerhome";
-import { useFonts } from 'expo-font';
+import { useFonts } from "expo-font";
 import EventDetails from "./components/myeventdetails";
 import AllEventDetails from "./screens/allEventDetails";
 import PublishSponsorship from "./screens/publishSposorShip";
 import PastEventDetails from "./components/pasteventdetails";
 import EventForm from "./components/createevent";
 import UpdateEvent from "./components/updateevent";
+import axios from "axios";
 const Stack = createStackNavigator();
 
-
-
+axios.defaults.baseURL = "http://192.168.8.198:3001";
 
 export default function App() {
   const [fontloaded] = useFonts({
-    DMBold: require('./assets/fonts/DMSans-Bold.ttf'),
-    DMMedium: require('./assets/fonts/DMSans-Medium.ttf'),
-    DMRegular: require('./assets/fonts/DMSans-Regular.ttf'),
+    DMBold: require("./assets/fonts/DMSans-Bold.ttf"),
+    DMMedium: require("./assets/fonts/DMSans-Medium.ttf"),
+    DMRegular: require("./assets/fonts/DMSans-Regular.ttf"),
   });
   if (!fontloaded) {
     return null;
   }
-
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -62,7 +61,6 @@ export default function App() {
             options={{ headerShown: false }}
           />
 
-
           <Stack.Screen
             name="organizerhome"
             component={OrganizerHome}
@@ -85,13 +83,11 @@ export default function App() {
             component={EventForm}
             options={{ headerShown: false }}
           />
-           <Stack.Screen
+          <Stack.Screen
             name="UpdateEvent"
             component={UpdateEvent}
             options={{ headerShown: false }}
           />
-
-
 
           <Stack.Screen
             name="AllEventDetails"
@@ -103,9 +99,6 @@ export default function App() {
             component={PublishSponsorship}
             options={{ headerShown: false }}
           />
-
-
-
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>

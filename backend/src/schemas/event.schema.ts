@@ -9,13 +9,31 @@ export class Event {
   eventName: string;
 
   @Prop()
-  date: string;
-
-  @Prop()
   eventType: string;
 
-  @Prop({ type: [{ type: Object }] })
+  @Prop()
+  date: string;
+
+  @Prop({ type: Object })
   location: Record<string, any>;
+
+  @Prop()
+  time: string;
+
+  @Prop()
+  expectedCrowd: number;
+
+  @Prop()
+  expectedBudget: number;
+
+  @Prop()
+  ticketCount: number;
+
+  @Prop()
+  ticketPrice: number;
+
+  @Prop()
+  soldTickets: number;
 
   @Prop()
   description: string;

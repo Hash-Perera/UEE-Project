@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, Image } from "react-native";
 import { SafeAreaView } from "react-native";
 import {
@@ -16,9 +16,26 @@ import { Ionicons } from "@expo/vector-icons";
 import ProfIcon from "../assets/images/user.png";
 import { COLORS } from "../constraints/constants";
 import OrganizerHome from "../screens/organizerhome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export default function GeneralNavigation() {
   const Drawer = createDrawerNavigator();
+  const [AuthToken, setAuthToken] = useState("");
+  const [AccType, setAccType] = useState("");
+
+  useEffect(() => {
+    getAsyncValues();
+    console.log(AccType);
+  }, []);
+
+  async function getAsyncValues() {
+    const AuthToken = await AsyncStorage.getItem("token");
+    await setAuthToken(AuthToken);
+    const AccType = await AsyncStorage.getItem("accType");
+    await setAccType(AccType);
+  }
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => {
@@ -79,34 +96,36 @@ export default function GeneralNavigation() {
         component={Home}
       />
 
- 
-      <Drawer.Screen
-        name="Organizerhome"
-        options={{
-          drawerLabel: "Organizer Home",
-          title: "Organizer Home",
-        }}
-        component={OrganizerHome}
-
+      {AccType == "Organizer" && (
+        <Drawer.Screen
+          name="Organizerhome"
+          options={{
+            drawerLabel: "Dashboard",
+            title: "Dashboard",
+          }}
+          component={OrganizerHome}
         />
+      )}
 
- 
       <Drawer.Screen
         name="All Events"
         options={{
-          drawerLabel: "All Events",
-          title: "All Events",
+          drawerLabel: "Events",
+          title: "Events",
         }}
         component={AllEvents}
       />
-      <Drawer.Screen
-        name="Sponsor Dashboard"
-        options={{
-          drawerLabel: "Sponsor Dashboard",
-          title: "Sponsor Dashboard",
-        }}
-        component={SponsorDash}
-      />
+      {AccType == "Sponsor" && (
+        <Drawer.Screen
+          name="Sponsor Dashboard"
+          options={{
+            drawerLabel: "Dashboard",
+            title: "Sponsor Dashboard",
+          }}
+          component={SponsorDash}
+        />
+      )}
+
       <Drawer.Screen
         name="All Feedbacks"
         options={{
@@ -115,27 +134,32 @@ export default function GeneralNavigation() {
         }}
         component={FeedbackOrg}
       />
-      <Drawer.Screen
-        name="Analytics"
-        options={{
-          drawerLabel: "Analytics",
-          title: "Analytics",
-        }}
-        component={AnalyticsOrg}
-      />
-      <Drawer.Screen
-        name="Request Sponsor"
-        options={{
-          drawerLabel: "Request Sponsor",
-          title: "Request Sponsor",
-        }}
-        component={ReqSponsor}
-      />
+      {AccType == "Organizor" && (
+        <Drawer.Screen
+          name="Analytics"
+          options={{
+            drawerLabel: "Analytics",
+            title: "Analytics",
+          }}
+          component={AnalyticsOrg}
+        />
+      )}
+      {AccType == "Organizor" && (
+        <Drawer.Screen
+          name="Request Sponsor"
+          options={{
+            drawerLabel: "Request Sponsor",
+            title: "Request Sponsor",
+          }}
+          component={ReqSponsor}
+        />
+      )}
+
       <Drawer.Screen
         name="Publish All Sponsors "
         options={{
-          drawerLabel: "Publish All Sponsors",
-          title: "Publish All Sponsors",
+          drawerLabel: "Sponsorships",
+          title: "Sponsorships",
         }}
         component={PublishAllSponsors}
       />

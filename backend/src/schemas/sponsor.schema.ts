@@ -21,7 +21,7 @@ export class Sponsor {
   description: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
-  createUser: Types.ObjectId;
+  createdUser: Types.ObjectId;
 }
 
 export const SponsorSchema = SchemaFactory.createForClass(Sponsor);

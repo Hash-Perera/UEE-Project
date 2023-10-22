@@ -5,15 +5,33 @@ export class CreateEventDto {
   eventName: string;
 
   @IsNotEmpty()
-  date: string;
-
-  @IsNotEmpty()
   eventType: string;
 
-  @IsNotEmpty()
+  @IsOptional()
+  date: string;
+
+  @IsOptional()
   location: Record<string, any>;
 
-  @IsNotEmpty()
+  @IsOptional()
+  time: string;
+
+  @IsOptional()
+  expectedCrowd: number;
+
+  @IsOptional()
+  expectedBudget: number;
+
+  @IsOptional()
+  ticketCount: number;
+
+  @IsOptional()
+  soldTickets: number;
+
+  @IsOptional()
+  ticketPrice: number;
+
+  @IsOptional()
   description: string;
 
   @IsOptional()

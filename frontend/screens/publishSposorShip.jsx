@@ -13,6 +13,8 @@ import {
 import { TextInput, Provider } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const { width, height } = Dimensions.get("window");
 
@@ -20,6 +22,13 @@ const PublishSponsorship = () => {
   const navigation = useNavigation();
   const [showDropDown, setShowDropDown] = useState(false);
   const [accountType, setAccountType] = useState("");
+
+  //////////////////////////////////////////////////////////
+  const [sponsorship, setSponsoship] = useState("");
+  const [budget, setBudget] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleBack = () => {
     navigation.goBack();
@@ -39,6 +48,35 @@ const PublishSponsorship = () => {
       value: "Sponsor",
     },
   ];
+
+  const handleLogin = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const data = {
+      sponsorship: sponsorship,
+      budget: budget,
+      eventType: eventType,
+      location: location,
+      description: description,
+    };
+
+    axios
+      .post("/sponsor/create", data, apiConfig)
+      .then((response) => {
+        console.log(response.data);
+        navigation.goBack();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -65,34 +103,42 @@ const PublishSponsorship = () => {
                 mode="outlined"
                 placeholder="Sponsorship"
                 style={styles.input}
+                onChangeText={(text) => setSponsoship(text)}
               />
               <TextInput
                 label="Budget"
                 mode="outlined"
                 placeholder="Budget"
                 style={styles.input}
+                onChangeText={(text) => setBudget(text)}
               />
               <TextInput
                 label="Event Type"
                 mode="outlined"
                 placeholder="Event Type"
                 style={styles.input}
+                onChangeText={(text) => setEventType(text)}
               />
               <TextInput
                 label="location"
                 mode="outlined"
                 placeholder="location"
                 style={styles.input}
+                onChangeText={(text) => setLocation(text)}
               />
               <TextInput
                 label="Description"
                 mode="outlined"
                 placeholder="Description"
                 style={styles.input}
+                onChangeText={(text) => setDescription(text)}
               />
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.registerButton}>
+              <TouchableOpacity
+                style={styles.registerButton}
+                onPress={handleLogin}
+              >
                 <Text style={styles.registerButtonText}>Publish</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.signButton} onPress={handleBack}>
