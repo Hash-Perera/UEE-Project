@@ -4,7 +4,7 @@ export class CreateFeedbackDto {
   @IsNotEmpty()
   feedback: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   date: string;
 
   @IsNotEmpty()

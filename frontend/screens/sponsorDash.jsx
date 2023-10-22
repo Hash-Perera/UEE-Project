@@ -8,33 +8,41 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 const { width, height } = Dimensions.get("window");
 import SponsorCard from "../components/sponsorCard";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const SponsorDash = () => {
   const navigation = useNavigation();
-  const [list, setList] = useState([
-    {
-      id: 1,
-      sponsorCategory: "Food and Beverage Sponsor",
-      companyImage: require("../assets/images/sampleCompany.png"),
-      budget: 100000,
-    },
-    {
-      id: 2,
-      sponsorCategory: "Main Sponsor",
-      companyImage: require("../assets/images/sampleCompany.png"),
-      budget: 160000,
-    },
-    {
-      id: 3,
-      sponsorCategory: "Main Sponsor",
-      companyImage: require("../assets/images/sampleCompany.png"),
-      budget: 1070000,
-    },
-  ]);
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    getSponsorships();
+  }, []);
+
+  const getSponsorships = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .get("/sponsor/all/my", apiConfig)
+      .then((response) => {
+        setList(response.data);
+        console.log(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   const handlePublish = () => {
     navigation.navigate("PublishSponsorship");
   };
@@ -56,7 +64,7 @@ const SponsorDash = () => {
         <FlatList
           data={list}
           renderItem={({ item }) => <SponsorCard item={item} />}
-          idExtractor={(item) => item.id}
+          idExtractor={(item) => item._id}
           horizontal={false}
           contentContainerStyle={styles.flatListContent}
         />

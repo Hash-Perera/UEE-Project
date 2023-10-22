@@ -11,17 +11,17 @@ const { width, height } = Dimensions.get("window");
 
 const SponsorCard = ({ item, handleCardPress }) => {
   return (
-    <TouchableOpacity onPress={() => handleCardPress(item.id)}>
+    <TouchableOpacity onPress={() => handleCardPress(item._id)}>
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
           <Image
-            source={item.companyImage}
+            source={require("../assets/images/sampleCompany.png")}
             resizeMode="contain"
             style={styles.image}
           />
         </View>
         <View style={styles.detailsContainer}>
-          <Text style={styles.title}>{item.sponsorCategory}</Text>
+          <Text style={styles.title}>Sponsorship: {item.sponsorship}</Text>
           <Text style={styles.detailTxt}>Estimated Budget: {item.budget}</Text>
         </View>
       </View>

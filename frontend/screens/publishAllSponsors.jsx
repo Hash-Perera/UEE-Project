@@ -8,31 +8,39 @@ import {
   Image,
   FlatList,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 const { width, height } = Dimensions.get("window");
 import SponsorCard from "../components/sponsorCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const PublishAllSponsors = () => {
-  const [list, setList] = useState([
-    {
-      id: 1,
-      sponsorCategory: "Food and Beverage Sponsor",
-      companyImage: require("../assets/images/sampleCompany.png"),
-      budget: 100000,
-    },
-    {
-      id: 2,
-      sponsorCategory: "Main Sponsor",
-      companyImage: require("../assets/images/sampleCompany.png"),
-      budget: 160000,
-    },
-    {
-      id: 3,
-      sponsorCategory: "Main Sponsor",
-      companyImage: require("../assets/images/sampleCompany.png"),
-      budget: 1070000,
-    },
-  ]);
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    getSponsorships();
+  }, []);
+
+  const getSponsorships = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .get("/sponsor/all", apiConfig)
+      .then((response) => {
+        setList(response.data);
+        console.log(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -40,7 +48,7 @@ const PublishAllSponsors = () => {
         <FlatList
           data={list}
           renderItem={({ item }) => <SponsorCard item={item} />}
-          idExtractor={(item) => item.id}
+          idExtractor={(item) => item._id}
           horizontal={false}
           contentContainerStyle={styles.flatListContent}
         />

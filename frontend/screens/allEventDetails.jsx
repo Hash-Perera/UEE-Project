@@ -52,8 +52,31 @@ const GeneralEventDetails = ({ route }) => {
     },
   ]);
 
-  const submitFeedback = () => {
-    setFeedback("");
+  const submitFeedback = async () => {
+    console.log(feedback);
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const data = {
+      eventId: "Event eke mongo Id eka dpm",
+      feedback: feedback,
+    };
+
+    axios
+      .post("/feedback/create", data, apiConfig)
+      .then((response) => {
+        setList(response.data);
+        console.log(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     setModalVisible(false);
   };
 
@@ -67,7 +90,6 @@ const GeneralEventDetails = ({ route }) => {
 
   const navigation = useNavigation();
   const handleBack = () => {
-    /* navigate to back */
     navigation.goBack();
   };
 
