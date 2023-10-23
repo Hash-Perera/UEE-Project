@@ -11,7 +11,7 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 const { width, height } = Dimensions.get("window");
@@ -22,7 +22,10 @@ import {
 import UserFeedbackCard from "../components/userFeedbackCard";
 
 const GeneralEventDetails = ({ route }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [price, setPrice] = useState(500);
+  const [ticketQty, setTicketQty] = useState(0);
+  const [total, setTotal] = useState(price * ticketQty);
+  console.log(total);
   const [feedback, setFeedback] = useState("");
   const [feedbackData, setFeedbackData] = useState([
     {
@@ -55,16 +58,6 @@ const GeneralEventDetails = ({ route }) => {
     },
   ]);
 
-  const submitFeedback = () => {
-    setFeedback("");
-    setModalVisible(false);
-  };
-
-  const openFeedbackModal = () => {
-    setModalVisible(true);
-    console.log("Feedback Modal Opened");
-  };
-
   const { item } = route.params;
   console.log(item);
 
@@ -80,6 +73,11 @@ const GeneralEventDetails = ({ route }) => {
   const handlePresentModal = () => {
     bottomSheetModalRef.current?.present();
   };
+
+  useEffect(() => {
+    const newTotal = price * ticketQty;
+    setTotal(newTotal);
+  }, [price, ticketQty]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -177,50 +175,7 @@ const GeneralEventDetails = ({ route }) => {
             </TouchableOpacity>
           </View>
 
-          {/* Feedback Modal */}
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Add Feedback</Text>
-                <TextInput
-                  style={styles.feedbackInput}
-                  placeholder="Your feedback..."
-                  multiline={true}
-                  value={feedback}
-                  onChangeText={(text) => setFeedback(text)}
-                />
-                {/* rating */}
-                <View style={styles.ratingBar}>
-                  <Text>Rating (5)</Text>
-                  <TextInput
-                    style={styles.ratingInput}
-                    placeholder="0"
-                    keyboardType="numeric"
-                  />
-                </View>
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={submitFeedback}
-                >
-                  <Text style={styles.submitButtonText}>Submit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => setModalVisible(!modalVisible)}
-                >
-                  <Text style={styles.closeButtonText}>Close</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
-
+          {/* BottomSheet Content */}
           <BottomSheetModal
             ref={bottomSheetModalRef}
             index={0}
@@ -229,7 +184,6 @@ const GeneralEventDetails = ({ route }) => {
               borderRadius: width * 0.08,
             }}
           >
-            {/* BottomSheet Content */}
             <View style={styles.bottomSheetContainer}>
               <Text style={styles.bTittle}>Reserve Your Ticket</Text>
               <View style={styles.horizontalLine} />
@@ -251,7 +205,80 @@ const GeneralEventDetails = ({ route }) => {
                   </View>
                 </View>
               </View>
-              <View style={styles.ticketDetails}></View>
+              <View style={styles.ticketDetails}>
+                <Text style={styles.ticketTittle}>Ticket Details</Text>
+                <View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <Text style={styles.bEvent}>General</Text>
+                    <Text style={styles.bEvent}>
+                      Available Tickets :{" "}
+                      <Text style={{ color: "red", fontWeight: "bold" }}>
+                        {" "}
+                        10
+                      </Text>
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <Text style={styles.subDetails}>Price : Rs. {price}</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Text style={styles.subDetails}>Quantity : </Text>
+                      <TextInput
+                        style={{
+                          width: width * 0.1,
+                          height: height * 0.04,
+                          backgroundColor: "#D9D9D8",
+                          borderRadius: width * 0.02,
+                          paddingHorizontal: width * 0.02,
+                          left: width * 0.06,
+                          top: height * 0.01,
+                        }}
+                        keyboardType="numeric"
+                        label="0"
+                        onChangeText={(text) => setTicketQty(text)}
+                      />
+                    </View>
+                  </View>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      alignSelf: "flex-end",
+                      top: height * 0.05,
+                      right: width * 0.12,
+                    }}
+                  >
+                    Total : {total}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.buyBtn}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#16213E",
+                    padding: width * 0.03,
+                    borderRadius: width * 0.1,
+                    alignItems: "center",
+                    width: "35%",
+                    alignSelf: "center",
+                    marginTop: height * 0.14,
+                  }}
+                >
+                  <Text style={styles.buyTicketText}>Buy</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </BottomSheetModal>
         </View>
@@ -407,51 +434,14 @@ const styles = StyleSheet.create({
   },
   subDetails: {
     color: "grey",
-    fontSize: width * 0.025,
+    fontSize: width * 0.03,
     left: width * 0.03,
     marginTop: height * 0.02,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-  },
-  modalContent: {
-    width: "80%",
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-  },
-  modalTitle: {
-    fontSize: 18,
+  ticketTittle: {
+    fontSize: width * 0.04,
     fontWeight: "bold",
-    marginBottom: 10,
-  },
-  feedbackInput: {
-    height: 80,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
-    padding: 10,
-  },
-  submitButton: {
-    backgroundColor: "#16213E",
-    borderRadius: 5,
-    padding: 10,
-    alignItems: "center",
-    marginBottom: 5,
-  },
-  submitButtonText: {
-    color: "white",
-  },
-  closeButton: {
-    backgroundColor: "rgb(260,120,76)",
-    borderRadius: 5,
-    padding: 10,
-    alignItems: "center",
-  },
-  closeButtonText: {
-    color: "white",
+    alignSelf: "center",
+    marginTop: height * 0.04,
   },
 });

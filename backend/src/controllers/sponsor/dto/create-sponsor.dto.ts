@@ -17,5 +17,5 @@ export class CreateSponsorDto {
   description: string;
 
   @IsOptional()
-  createUser: string;
+  createdUser: string;
 }

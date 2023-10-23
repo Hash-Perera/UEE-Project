@@ -20,6 +20,10 @@ export class SponsorService {
     return await this.SponsorModel.find();
   }
 
+  async findMyAll(id: string) {
+    return await this.SponsorModel.find({ createdUser: id });
+  }
+
   async findOne(id: string) {
     return await this.SponsorModel.findById(id);
   }

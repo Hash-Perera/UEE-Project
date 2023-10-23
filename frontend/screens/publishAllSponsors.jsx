@@ -2,21 +2,19 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
-  SafeAreaView,
-  FlatList,
   Dimensions,
   StyleSheet,
+  SafeAreaView,
+  Image,
+  FlatList,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 const { width, height } = Dimensions.get("window");
 import SponsorCard from "../components/sponsorCard";
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-const SponsorDash = () => {
-  const navigation = useNavigation();
+const PublishAllSponsors = () => {
   const [list, setList] = useState([]);
 
   useEffect(() => {
@@ -34,7 +32,7 @@ const SponsorDash = () => {
     };
 
     axios
-      .get("/sponsor/all/my", apiConfig)
+      .get("/sponsor/all", apiConfig)
       .then((response) => {
         setList(response.data);
         console.log(response.data);
@@ -43,24 +41,10 @@ const SponsorDash = () => {
         console.log(e);
       });
   };
-  const handlePublish = () => {
-    navigation.navigate("PublishSponsorship");
-  };
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topContainer}>
-        <TouchableOpacity
-          style={styles.addImgContainer}
-          onPress={handlePublish}
-        >
-          <Image
-            source={require("../assets/images/add.png")}
-            style={styles.addImg}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.bottomContainer}>
-        <Text style={styles.tittle}>Your List</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.tittle}>Publish All Sponsors</Text>
         <FlatList
           data={list}
           renderItem={({ item }) => <SponsorCard item={item} />}
@@ -73,38 +57,22 @@ const SponsorDash = () => {
   );
 };
 
-export default SponsorDash;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
   },
-  topContainer: {
-    flex: 1,
-    bottom: height * 0.05,
-    top: height * 0.05,
-  },
-  addImgContainer: {
-    width: width * 0.5,
-    height: height * 0.5,
-    left: width * 0.1,
-  },
-  addImg: {
-    width: width * 0.25,
-    height: height * 0.15,
-  },
-  bottomContainer: {
-    flex: 3,
-    padding: width * 0.05,
-  },
   tittle: {
-    fontSize: 20,
+    fontSize: width * 0.05,
     fontWeight: "bold",
     textAlign: "center",
-    marginTop: height * 0.02,
+    marginTop: height * 0.03,
+    marginBottom: height * 0.05,
   },
   flatListContent: {
-    gap: height * 0.02,
+    gap: width * 0.02,
+    margin: width * 0.04,
   },
 });
+
+export default PublishAllSponsors;

@@ -17,7 +17,6 @@ import DropDown from "react-native-paper-dropdown";
 import ReqSponsorCard from "../components/reqSponsorCard";
 const ReqSponsor = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState([]);
   const [sponsorData, setSponsorData] = useState([
     {
       id: "1",
@@ -44,6 +43,7 @@ const ReqSponsor = () => {
       companyImage: require("../assets/images/sampleCompany.png"),
     },
   ]);
+  const [filteredData, setFilteredData] = useState(sponsorData);
 
   const handleSearch = () => {
     const filtered = sponsorData.filter((item) =>
@@ -119,7 +119,7 @@ const ReqSponsor = () => {
               <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Send Request</Text>
                 <DropDown
-                  label={"Account Type"}
+                  label={"Select Event"}
                   mode={"outlined"}
                   visible={showDropDown}
                   showDropDown={() => setShowDropDown(true)}
