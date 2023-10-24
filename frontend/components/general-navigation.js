@@ -1,25 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, Image } from "react-native";
 import { SafeAreaView } from "react-native";
 import {
   DrawerItemList,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
-import Contact from "../screens/contact";
-import Backup from "../screens/backup";
-import Setting from "../screens/setting";
 import Home from "../screens/home";
 import AllEvents from "../screens/allEvents";
 import FeedbackOrg from "../screens/feedbackOrg";
 import AnalyticsOrg from "../screens/analyticsOrg";
 import SponsorDash from "../screens/sponsorDash";
 import ReqSponsor from "../screens/reqSponsor";
+import PublishAllSponsors from "../screens/publishAllSponsors";
 import { Ionicons } from "@expo/vector-icons";
 import ProfIcon from "../assets/images/user.png";
 import { COLORS } from "../constraints/constants";
+import OrganizerHome from "../screens/organizerhome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export default function GeneralNavigation() {
   const Drawer = createDrawerNavigator();
+  const [AuthToken, setAuthToken] = useState("");
+  const [AccType, setAccType] = useState("");
+
+  useEffect(() => {
+    getAsyncValues();
+    console.log(AccType);
+  }, []);
+
+  async function getAsyncValues() {
+    const AuthToken = await AsyncStorage.getItem("token");
+    await setAuthToken(AuthToken);
+    const AccType = await AsyncStorage.getItem("accType");
+    await setAccType(AccType);
+  }
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => {
@@ -79,46 +95,37 @@ export default function GeneralNavigation() {
         }}
         component={Home}
       />
-      <Drawer.Screen
-        name="Contacts"
-        options={{
-          drawerLabel: "Contact",
-          title: "Contact",
-        }}
-        component={Contact}
-      />
-      <Drawer.Screen
-        name="Backup"
-        options={{
-          drawerLabel: "Backup",
-          title: "Contact",
-        }}
-        component={Backup}
-      />
-      <Drawer.Screen
-        name="Settings"
-        options={{
-          drawerLabel: "Settings",
-          title: "Settings",
-        }}
-        component={Setting}
-      />
+
+      {AccType == "Organizer" && (
+        <Drawer.Screen
+          name="Organizerhome"
+          options={{
+            drawerLabel: "Dashboard",
+            title: "Dashboard",
+          }}
+          component={OrganizerHome}
+        />
+      )}
+
       <Drawer.Screen
         name="All Events"
         options={{
-          drawerLabel: "All Events",
-          title: "All Events",
+          drawerLabel: "Events",
+          title: "Events",
         }}
         component={AllEvents}
       />
-      <Drawer.Screen
-        name="Sponsor Dashboard"
-        options={{
-          drawerLabel: "Sponsor Dashboard",
-          title: "Sponsor Dashboard",
-        }}
-        component={SponsorDash}
-      />
+      {AccType == "Sponsor" && (
+        <Drawer.Screen
+          name="Sponsor Dashboard"
+          options={{
+            drawerLabel: "Dashboard",
+            title: "Sponsor Dashboard",
+          }}
+          component={SponsorDash}
+        />
+      )}
+
       <Drawer.Screen
         name="All Feedbacks"
         options={{
@@ -127,21 +134,34 @@ export default function GeneralNavigation() {
         }}
         component={FeedbackOrg}
       />
+      {AccType == "Organizor" && (
+        <Drawer.Screen
+          name="Analytics"
+          options={{
+            drawerLabel: "Analytics",
+            title: "Analytics",
+          }}
+          component={AnalyticsOrg}
+        />
+      )}
+      {AccType == "Organizor" && (
+        <Drawer.Screen
+          name="Request Sponsor"
+          options={{
+            drawerLabel: "Request Sponsor",
+            title: "Request Sponsor",
+          }}
+          component={ReqSponsor}
+        />
+      )}
+
       <Drawer.Screen
-        name="Analytics"
+        name="Publish All Sponsors "
         options={{
-          drawerLabel: "Analytics",
-          title: "Analytics",
+          drawerLabel: "Sponsorships",
+          title: "Sponsorships",
         }}
-        component={AnalyticsOrg}
-      />
-      <Drawer.Screen
-        name="Request Sponsor"
-        options={{
-          drawerLabel: "Request Sponsor",
-          title: "Request Sponsor",
-        }}
-        component={ReqSponsor}
+        component={PublishAllSponsors}
       />
     </Drawer.Navigator>
   );

@@ -20,13 +20,19 @@ export class SponsorController {
   @Post('create')
   create(@Request() req, @Body() dto: CreateSponsorDto) {
     const userId = req.user.id;
-    dto.createUser = userId;
+    dto.createdUser = userId;
     return this.SponsorService.create(dto);
   }
 
   @Get('all')
   findAll() {
     return this.SponsorService.findAll();
+  }
+
+  @Get('all/my')
+  findMyAll(@Request() req) {
+    const id = req.user.id;
+    return this.SponsorService.findMyAll(id);
   }
 
   @Get(':id')

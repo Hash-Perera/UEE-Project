@@ -21,15 +21,28 @@ const FeedCard = ({ item }) => {
           <Text style={{ fontSize: width * 0.05, fontWeight: "bold", flex: 1 }}>
             {item.eventName}
           </Text>
-          <Text
-            style={{
-              fontSize: width * 0.03,
-              color: "#fff",
-              marginTop: height * 0.015,
-            }}
-          >
-            Date: {item.date}
-          </Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={{
+                fontSize: width * 0.03,
+                color: "#fff",
+                marginTop: height * 0.015,
+              }}
+            >
+              Date: {item.date}
+            </Text>
+            <TouchableOpacity>
+              <Image
+                source={require("../assets/images/trash.png")}
+                style={{
+                  width: width * 0.08,
+                  height: width * 0.08,
+                  marginLeft: width * 0.02,
+                  marginTop: height * 0.01,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         <View>
           <Text

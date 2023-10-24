@@ -21,12 +21,19 @@ export class EventController {
   create(@Request() req, @Body() dto: CreateEventDto) {
     const userId = req.user.id;
     dto.createUser = userId;
+    dto.soldTickets = 0;
     return this.EventService.create(dto);
   }
 
   @Get('all')
   findAll() {
     return this.EventService.findAll();
+  }
+
+  @Get('all/my')
+  findMyAll(@Request() req) {
+    const id = req.user.id;
+    return this.EventService.findMyAll(id);
   }
 
   @Get(':id')
