@@ -11,7 +11,7 @@ const { width, height } = Dimensions.get("window");
 
 const SponsorCard = ({ item, handleCardPress }) => {
   return (
-    <TouchableOpacity onPress={() => handleCardPress(item._id)}>
+    <TouchableOpacity onPress={() => handleCardPress(item)}>
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
           <Image
