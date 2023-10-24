@@ -11,11 +11,11 @@ const Eventcard = ({ item, handleCardPress }) => {
         style={styles.image}
       />
       <Text style={styles.eventName} numberOfLines={1}>
-        {item.eventname}
+        {item.eventName}
       </Text>
       <View style={styles.details}>
-        <Text style={styles.detailText}>{item.venue}</Text>
-        <Text style={styles.detailText}>{item.eventtype}</Text>
+        <Text style={styles.detailText}>{item.location}</Text>
+        <Text style={styles.detailText}>{item.eventType}</Text>
         <Text style={styles.detailText}>{item.date}</Text>
       </View>
       <View style={styles.ticketcontainer}>
@@ -25,7 +25,7 @@ const Eventcard = ({ item, handleCardPress }) => {
         </View>
         <View style={styles.ticketItem}>
           <Text style={styles.ticketLabel}>Available Tickets:</Text>
-          <Text style={styles.ticketValue}>{item.alltickets} available</Text>
+          <Text style={styles.ticketValue}>{item.ticketCount} available</Text>
         </View>
       </View>
     </TouchableOpacity>
