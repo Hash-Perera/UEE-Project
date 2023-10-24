@@ -16,6 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const { width, height } = Dimensions.get("window");
 
@@ -24,8 +25,10 @@ const EventForm = () => {
   const [eventName, setEventName] = useState("");
   const [eventType, setEventType] = useState("Concert");
   const [location, setLocation] = useState("");
-  const [time, setTime] = useState("");
-  const [date, setDate] = useState("");
+  const [time, setTime] = useState(new Date());
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setshowPicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const [expectedCrowd, setExpectedCrowd] = useState("");
   const [expectedBudget, setExpectedBudget] = useState("");
   const [ticketcount, setticketcount] = useState("");
@@ -44,12 +47,16 @@ const EventForm = () => {
       },
     };
 
+    const formattedTime =
+      time instanceof Date
+        ? time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        : "";
     const data = {
       eventName: eventName,
       eventType: eventType,
       location: location,
-      time: time,
-      date: date,
+      time: formattedTime,
+      date: time.toISOString().split("T")[0],
       expectedCrowd: expectedCrowd,
       expectedBudget: expectedBudget,
       description: eventdescription,
@@ -141,21 +148,73 @@ const EventForm = () => {
               onChangeText={(text) => setLocation(text)}
             />
 
+            {showTimePicker && (
+              <DateTimePicker
+                style={{ width: 200 }}
+                mode="time"
+                is24Hour={true}
+                placeholder="Select Time"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                value={time}
+                onChange={(event, selectedtime) => {
+                  setShowTimePicker(false);
+                  if (event.type === "set") {
+                    setTime(selectedtime);
+                  }
+                }}
+              />
+            )}
+
             <Text style={styles.label}>Time:</Text>
-            <TextInput
-              style={styles.input}
-              value={time}
-              placeholder="enter event time"
-              onChangeText={(text) => setTime(text)}
-            />
+            <TouchableOpacity onPress={() => setShowTimePicker(true)}>
+              <Text style={styles.input}>
+                {time instanceof Date
+                  ? time.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : ""}
+              </Text>
+            </TouchableOpacity>
 
             <Text style={styles.label}>Date:</Text>
-            <TextInput
-              style={styles.input}
-              value={date}
-              placeholder="enter event date"
-              onChangeText={(text) => setDate(text)}
-            />
+
+            {showPicker && (
+              <DateTimePicker
+                style={{ width: 200 }}
+                mode="date"
+                placeholder="Select Date"
+                format="YYYY-MM-DD"
+                minDate="2023-01-01"
+                maxDate="2025-12-31"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: "absolute",
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
+                  },
+                  dateInput: {
+                    marginLeft: 36,
+                  },
+                }}
+                value={date}
+                onChange={(event, selectedDate) => {
+                  setshowPicker(false); // Close the picker
+                  if (event.type === "set") {
+                    setDate(selectedDate);
+                  }
+                }}
+              />
+            )}
+            <TouchableOpacity onPress={() => setshowPicker(true)}>
+              <Text style={styles.input}>
+                {date.toDateString()} {/* Display the selected date */}
+              </Text>
+            </TouchableOpacity>
 
             <Text style={styles.label}>Expected Crowd:</Text>
             <TextInput
