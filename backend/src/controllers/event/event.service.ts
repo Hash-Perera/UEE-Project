@@ -17,6 +17,10 @@ export class EventService {
     return await this.EventModel.find();
   }
 
+  async findMyAll(id: string) {
+    return await this.EventModel.find({ createUser: id });
+  }
+
   async findOne(id: string) {
     return await this.EventModel.findById(id);
   }

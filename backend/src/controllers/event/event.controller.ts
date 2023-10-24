@@ -30,6 +30,12 @@ export class EventController {
     return this.EventService.findAll();
   }
 
+  @Get('all/my')
+  findMyAll(@Request() req) {
+    const id = req.user.id;
+    return this.EventService.findMyAll(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.EventService.findOne(id);
