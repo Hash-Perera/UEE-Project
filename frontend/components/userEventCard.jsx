@@ -15,7 +15,7 @@ const UserEventCard = ({ item, handleCardPress }) => {
   const totalStars = 5;
 
   return (
-    <TouchableOpacity onPress={() => handleCardPress(item.id)}>
+    <TouchableOpacity onPress={() => handleCardPress(item)}>
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
           <Image

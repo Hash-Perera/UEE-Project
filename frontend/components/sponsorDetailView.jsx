@@ -1,81 +1,34 @@
-import React, { useState } from "react";
 import {
   View,
   Text,
-  Image,
-  StyleSheet,
   TouchableOpacity,
-  ScrollView,
+  Image,
   SafeAreaView,
+  FlatList,
   Dimensions,
-  KeyboardAvoidingView,
+  StyleSheet,
 } from "react-native";
+import React, { useEffect, useState } from "react";
 import { TextInput, Provider } from "react-native-paper";
+const { width, height } = Dimensions.get("window");
+import SponsorCard from "../components/sponsorCard";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-const { width, height } = Dimensions.get("window");
-
-const PublishSponsorship = () => {
+const SponsorDetailView = ({ route }) => {
+  const { item } = route.params;
   const navigation = useNavigation();
-  const [accountType, setAccountType] = useState("");
 
-  //////////////////////////////////////////////////////////
-  const [sponsorship, setSponsoship] = useState("");
-  const [budget, setBudget] = useState("");
-  const [eventType, setEventType] = useState("");
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
+  const [sponsorship, setSponsoship] = useState(item.sponsorship);
+  const [budget, setBudget] = useState(item.budget);
+  const [eventType, setEventType] = useState(item.eventType);
+  const [location, setLocation] = useState(item.location);
+  const [description, setDescription] = useState(item.description);
 
   const handleBack = () => {
     navigation.goBack();
   };
-
-  const accountTypes = [
-    {
-      label: "General",
-      value: "General",
-    },
-    {
-      label: "Organizer",
-      value: "Organizer",
-    },
-    {
-      label: "Sponsor",
-      value: "Sponsor",
-    },
-  ];
-
-  const handleLogin = async () => {
-    const AuthToken = await AsyncStorage.getItem("token");
-
-    const apiConfig = {
-      headers: {
-        Authorization: `Bearer ${AuthToken}`,
-        "Content-Type": "application/json",
-      },
-    };
-
-    const data = {
-      sponsorship: sponsorship,
-      budget: budget,
-      eventType: eventType,
-      location: location,
-      description: description,
-    };
-
-    axios
-      .post("/sponsor/create", data, apiConfig)
-      .then((response) => {
-        console.log(response.data);
-        navigation.goBack();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Provider>
@@ -101,6 +54,7 @@ const PublishSponsorship = () => {
                 mode="outlined"
                 placeholder="Sponsorship"
                 style={styles.input}
+                value={sponsorship}
                 onChangeText={(text) => setSponsoship(text)}
               />
               <TextInput
@@ -108,6 +62,7 @@ const PublishSponsorship = () => {
                 mode="outlined"
                 placeholder="Budget"
                 style={styles.input}
+                value={budget}
                 onChangeText={(text) => setBudget(text)}
               />
               <TextInput
@@ -115,6 +70,7 @@ const PublishSponsorship = () => {
                 mode="outlined"
                 placeholder="Event Type"
                 style={styles.input}
+                value={eventType}
                 onChangeText={(text) => setEventType(text)}
               />
               <TextInput
@@ -122,6 +78,7 @@ const PublishSponsorship = () => {
                 mode="outlined"
                 placeholder="location"
                 style={styles.input}
+                //value={location}
                 onChangeText={(text) => setLocation(text)}
               />
               <TextInput
@@ -129,18 +86,16 @@ const PublishSponsorship = () => {
                 mode="outlined"
                 placeholder="Description"
                 style={styles.input}
+                value={description}
                 onChangeText={(text) => setDescription(text)}
               />
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.registerButton}
-                onPress={handleLogin}
-              >
-                <Text style={styles.registerButtonText}>Publish</Text>
+              <TouchableOpacity style={styles.registerButton}>
+                <Text style={styles.registerButtonText}>Save Changes</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.signButton} onPress={handleBack}>
-                <Text style={styles.signButtonText}>Cancel</Text>
+              <TouchableOpacity style={styles.signButton}>
+                <Text style={styles.signButtonText}>Delete</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -219,4 +174,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PublishSponsorship;
+export default SponsorDetailView;

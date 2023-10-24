@@ -46,6 +46,10 @@ const SponsorDash = () => {
   const handlePublish = () => {
     navigation.navigate("PublishSponsorship");
   };
+
+  handleCardPress = (item) => {
+    navigation.navigate("SponsorDetailView", { item: item });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
@@ -63,9 +67,10 @@ const SponsorDash = () => {
         <Text style={styles.tittle}>Your List</Text>
         <FlatList
           data={list}
-          renderItem={({ item }) => <SponsorCard item={item} />}
-          idExtractor={(item) => item._id}
-          horizontal={false}
+          renderItem={({ item }) => (
+            <SponsorCard item={item} handleCardPress={handleCardPress} />
+          )}
+          itemExtractor={(item) => item._id}
           contentContainerStyle={styles.flatListContent}
         />
       </View>

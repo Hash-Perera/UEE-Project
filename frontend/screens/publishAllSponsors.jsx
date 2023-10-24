@@ -21,6 +21,10 @@ const PublishAllSponsors = () => {
     getSponsorships();
   }, []);
 
+  const handleCardPress = (item) => {
+    console.log(item);
+  };
+
   const getSponsorships = async () => {
     const AuthToken = await AsyncStorage.getItem("token");
 
@@ -47,7 +51,9 @@ const PublishAllSponsors = () => {
         <Text style={styles.tittle}>Publish All Sponsors</Text>
         <FlatList
           data={list}
-          renderItem={({ item }) => <SponsorCard item={item} />}
+          renderItem={({ item }) => (
+            <SponsorCard item={item} handleCardPress={handleCardPress} />
+          )}
           idExtractor={(item) => item._id}
           horizontal={false}
           contentContainerStyle={styles.flatListContent}
