@@ -43,9 +43,6 @@ const GeneralEventDetails = ({ route }) => {
       },
     };
 
-    const url = `/feedback/for-event/${item._id}`;
-    console.log(url);
-
     axios
       .get(`/feedback/for-event/${item._id}`, apiConfig)
       .then((response) => {
