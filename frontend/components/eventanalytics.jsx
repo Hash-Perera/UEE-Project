@@ -19,9 +19,6 @@ const EventAnalytics = ({ pastevent }) => {
     Number(pastevent.expectedBudget)
   );
 
-  console.log(pastevent.soldTickets, "sold tickets");
-  console.log(pastevent.alltickets, "sold tickets");
-
   console.log(pastevent);
   const pieChartConfig = {
     backgroundGradientFrom: "#f9f9f9",

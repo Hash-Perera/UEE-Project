@@ -22,7 +22,11 @@ import {
 import UserFeedbackCard from "../components/userFeedbackCard";
 
 const GeneralEventDetails = ({ route }) => {
-  const [price, setPrice] = useState(500);
+  const { item } = route.params;
+  console.log(item);
+
+  //setters
+  const [price, setPrice] = useState(item.ticketPrice);
   const [ticketQty, setTicketQty] = useState(0);
   const [total, setTotal] = useState(price * ticketQty);
   console.log(total);
@@ -58,14 +62,13 @@ const GeneralEventDetails = ({ route }) => {
     },
   ]);
 
-  const { item } = route.params;
-  console.log(item);
-
+  //navigation goback
   const navigation = useNavigation();
   const handleBack = () => {
     navigation.navigate("GeneralNavigation");
   };
 
+  //BottomSheet
   const bottomSheetModalRef = useRef(null);
 
   const snapPoints = ["74%"];
@@ -74,6 +77,7 @@ const GeneralEventDetails = ({ route }) => {
     bottomSheetModalRef.current?.present();
   };
 
+  //price calculation
   useEffect(() => {
     const newTotal = price * ticketQty;
     setTotal(newTotal);
@@ -94,12 +98,9 @@ const GeneralEventDetails = ({ route }) => {
             <TouchableOpacity style={styles.backButton} onPress={handleBack}>
               <Image source={require("../assets/images/backIcon.png")} />
             </TouchableOpacity>
-            <Text style={styles.eventTitle}>Viramaya</Text>
+            <Text style={styles.eventTitle}>{item.eventName}</Text>
             <Text style={styles.eventDesc} numberOfLines={3}>
-              The SLIIT was established in 1999 to educate and train IT ...
-              Wiramaya – විරාමය 2022 organized by Faculty of Computing Student
-              Community (FCSC) of SLIIT will be held on 26th of February 2022 at
-              SLIIT Malabe Campus.
+              {item.description}
             </Text>
           </View>
           <View style={styles.photos}>
@@ -113,7 +114,7 @@ const GeneralEventDetails = ({ route }) => {
                 <Text style={{ fontWeight: "bold", color: "gray" }}>
                   Date:{" "}
                 </Text>
-                26th February 2022
+                {item.date}
               </Text>
               <View
                 style={{
@@ -125,13 +126,13 @@ const GeneralEventDetails = ({ route }) => {
                   <Text style={{ fontWeight: "bold", color: "gray" }}>
                     Time:{" "}
                   </Text>
-                  8.00 am
+                  {item.time}
                 </Text>
                 <Text>
                   <Text style={{ fontWeight: "bold", color: "gray" }}>
                     Venue:{" "}
                   </Text>
-                  SLIIT Malabe Campus
+                  {item.location}
                 </Text>
               </View>
               <View
@@ -195,11 +196,11 @@ const GeneralEventDetails = ({ route }) => {
                   />
                 </View>
                 <View style={styles.bottomDetails}>
-                  <Text style={styles.bEvent}>Wiramaya</Text>
+                  <Text style={styles.bEvent}>{item.eventName}</Text>
                   <View>
-                    <Text style={styles.subDetails}>Date : 26th Feb 2022</Text>
+                    <Text style={styles.subDetails}>Date : {item.date}</Text>
                     <Text style={styles.subDetails}>
-                      Location : SLIIT Premises
+                      Location : {item.location}
                     </Text>
                     <Text style={styles.subDetails}>Duration : 4h</Text>
                   </View>
@@ -219,7 +220,7 @@ const GeneralEventDetails = ({ route }) => {
                       Available Tickets :{" "}
                       <Text style={{ color: "red", fontWeight: "bold" }}>
                         {" "}
-                        10
+                        {item.ticketCount - item.soldTickets}
                       </Text>
                     </Text>
                   </View>
@@ -229,7 +230,9 @@ const GeneralEventDetails = ({ route }) => {
                       justifyContent: "space-around",
                     }}
                   >
-                    <Text style={styles.subDetails}>Price : Rs. {price}</Text>
+                    <Text style={styles.subDetails}>
+                      Price : Rs. {item.ticketPrice}
+                    </Text>
                     <View
                       style={{
                         flexDirection: "row",
@@ -289,6 +292,7 @@ const GeneralEventDetails = ({ route }) => {
 
 export default GeneralEventDetails;
 
+//styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
