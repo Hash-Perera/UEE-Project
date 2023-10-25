@@ -13,12 +13,17 @@ import {
 } from "react-native";
 import UserEventCard from "../components/userEventCard";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
 const { width, height } = Dimensions.get("window");
 
 export default function Home() {
+  const navigation = useNavigation();
+
+  //setters
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [eventData, setEventData] = useState([
@@ -103,8 +108,7 @@ export default function Home() {
     })();
   }, []);
 
-  const navigation = useNavigation();
-
+  //card press
   const handleCardPress = (item) => {
     console.log("Card Pressed");
     console.log(item);
@@ -158,6 +162,7 @@ export default function Home() {
   );
 }
 
+//styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -170,7 +175,7 @@ const styles = StyleSheet.create({
   map: {
     top: height * 0.035,
     width: width * 1,
-    height: 300, // Set a fixed height for the map
+    height: 300,
   },
   headerText: {
     fontWeight: "bold",

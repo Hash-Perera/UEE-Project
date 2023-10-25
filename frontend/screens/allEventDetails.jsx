@@ -19,6 +19,9 @@ const { width, height } = Dimensions.get("window");
 import UserFeedbackCard from "../components/userFeedbackCard";
 
 const GeneralEventDetails = ({ route }) => {
+  const { item } = route.params;
+
+  //setters
   const [modalVisible, setModalVisible] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [feedbackData, setFeedbackData] = useState([
@@ -52,6 +55,7 @@ const GeneralEventDetails = ({ route }) => {
     },
   ]);
 
+  //submit feedback
   const submitFeedback = async () => {
     console.log(feedback);
     const AuthToken = await AsyncStorage.getItem("token");
@@ -80,19 +84,19 @@ const GeneralEventDetails = ({ route }) => {
     setModalVisible(false);
   };
 
+  //open feedback modal
   const openFeedbackModal = () => {
     setModalVisible(true);
     console.log("Feedback Modal Opened");
   };
 
-  const { item } = route.params;
-  console.log(item);
-
+  //navigation
   const navigation = useNavigation();
   const handleBack = () => {
     navigation.goBack();
   };
 
+  //rating dropDawn
   const [showDropDown, setShowDropDown] = useState(false);
   const [ratingValue, setratingValue] = useState("");
 
@@ -133,12 +137,9 @@ const GeneralEventDetails = ({ route }) => {
           <TouchableOpacity style={styles.backButton} onPress={handleBack}>
             <Image source={require("../assets/images/backIcon.png")} />
           </TouchableOpacity>
-          <Text style={styles.eventTitle}>Viramaya</Text>
+          <Text style={styles.eventTitle}>{item.eventName}</Text>
           <Text style={styles.eventDesc} numberOfLines={3}>
-            The SLIIT was established in 1999 to educate and train IT ...
-            Wiramaya – විරාමය 2022 organized by Faculty of Computing Student
-            Community (FCSC) of SLIIT will be held on 26th of February 2022 at
-            SLIIT Malabe Campus.
+            {item.description}
           </Text>
         </View>
         <View style={styles.photos}>
@@ -149,7 +150,7 @@ const GeneralEventDetails = ({ route }) => {
         <View style={styles.eventDetails}>
           <Text>
             <Text style={{ fontWeight: "bold", color: "gray" }}>Date: </Text>
-            26th February 2022
+            {item.date}
           </Text>
           <View
             style={{
@@ -159,11 +160,11 @@ const GeneralEventDetails = ({ route }) => {
           >
             <Text>
               <Text style={{ fontWeight: "bold", color: "gray" }}>Time: </Text>
-              8.00 am
+              {item.time}
             </Text>
             <Text>
               <Text style={{ fontWeight: "bold", color: "gray" }}>Venue: </Text>
-              SLIIT Malabe Campus
+              {item.location}
             </Text>
           </View>
           <View
@@ -264,6 +265,7 @@ const GeneralEventDetails = ({ route }) => {
 
 export default GeneralEventDetails;
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
