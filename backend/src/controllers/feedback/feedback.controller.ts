@@ -25,7 +25,7 @@ export class FeedbackController {
   }
 
   //find For a event
-  @Get('for-event:id')
+  @Get('for-event/:id')
   findForEvent(@Param('id') id: string) {
     return this.FeedbackService.findForEvent(id);
   }

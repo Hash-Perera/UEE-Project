@@ -14,7 +14,7 @@ const UserFeedbackCard = ({ item }) => {
           source={require("../assets/images/user.png")}
           style={styles.userImg}
         />
-        <Text style={styles.userName}>{item.userName}</Text>
+        <Text style={styles.userName}>{item.createUser.userName}</Text>
       </View>
       <Text style={styles.feedbackText}>{item.feedback}</Text>
       <View style={styles.ratingBar}>

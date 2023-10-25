@@ -134,7 +134,7 @@ export default function GeneralNavigation() {
         }}
         component={FeedbackOrg}
       />
-      {AccType == "Organizor" && (
+      {AccType == "Organizer" && (
         <Drawer.Screen
           name="Analytics"
           options={{
@@ -144,7 +144,7 @@ export default function GeneralNavigation() {
           component={AnalyticsOrg}
         />
       )}
-      {AccType == "Organizor" && (
+      {AccType == "Organizer" && (
         <Drawer.Screen
           name="Request Sponsor"
           options={{

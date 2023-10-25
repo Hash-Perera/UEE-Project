@@ -10,50 +10,53 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import { Provider } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import DropDown from "react-native-paper-dropdown";
 const { width, height } = Dimensions.get("window");
 import UserFeedbackCard from "../components/userFeedbackCard";
 
 const GeneralEventDetails = ({ route }) => {
   const { item } = route.params;
+  console.log(item._id);
 
   //setters
   const [modalVisible, setModalVisible] = useState(false);
   const [feedback, setFeedback] = useState("");
-  const [feedbackData, setFeedbackData] = useState([
-    {
-      id: "1",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "1",
-    },
-    {
-      id: "2",
-      userName: "Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "2",
-    },
-    {
-      id: "3",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "3",
-    },
-    {
-      id: "4",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "4",
-    },
-  ]);
+  const [feedbackData, setFeedbackData] = useState([]);
+
+  useEffect(() => {
+    getFeedbacks();
+  }, []);
+
+  //get feedbacks
+  const getFeedbacks = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const url = `/feedback/for-event/${item._id}`;
+    console.log(url);
+
+    axios
+      .get(`/feedback/for-event/${item._id}`, apiConfig)
+      .then((response) => {
+        console.log(response.data);
+        setFeedbackData(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   //submit feedback
   const submitFeedback = async () => {
@@ -68,15 +71,18 @@ const GeneralEventDetails = ({ route }) => {
     };
 
     const data = {
-      eventId: "Event eke mongo Id eka dpm",
+      eventId: item._id,
       feedback: feedback,
+      rating: ratingValue,
     };
+
+    console.log(data);
 
     axios
       .post("/feedback/create", data, apiConfig)
       .then((response) => {
-        setList(response.data);
         console.log(response.data);
+        getFeedbacks();
       })
       .catch((e) => {
         console.log(e);

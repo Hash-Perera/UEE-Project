@@ -18,7 +18,9 @@ export class FeedbackService {
 
   //find For a event
   async findForEvent(eventId: string) {
-    return await this.FeedbackModel.find({ eventId: eventId });
+    return await this.FeedbackModel.find({ eventId: eventId }).populate(
+      'createUser',
+    );
   }
 
   async findOne(id: string) {
