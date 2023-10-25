@@ -48,6 +48,12 @@ export class EventController {
     return this.EventService.findMyFutureAndCurrentAll(id);
   }
 
+  @Get('all/my/count')
+  findeventCount(@Request() req) {
+    const id = req.user.id;
+    return this.EventService.findeventCount(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.EventService.findOne(id);

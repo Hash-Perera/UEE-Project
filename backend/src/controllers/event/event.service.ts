@@ -55,6 +55,32 @@ export class EventService {
     return futureAndCurrentEvents;
   }
 
+  async findeventCount(id: string) {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const events = await this.EventModel.find({
+      createUser: id,
+    });
+
+    const pastEvents = events.filter((event) => {
+      const eventDate = new Date(event['date']);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate < currentDate;
+    });
+
+    const futureAndCurrentEvents = events.filter((event) => {
+      const eventDate = new Date(event['date']);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate >= currentDate;
+    });
+
+    return {
+      pastEventsCount: pastEvents.length,
+      futureEventCount: futureAndCurrentEvents.length,
+    };
+  }
+
   async findOne(id: string) {
     return await this.EventModel.findById(id);
   }
