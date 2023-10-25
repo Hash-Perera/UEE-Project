@@ -21,6 +21,40 @@ export class EventService {
     return await this.EventModel.find({ createUser: id });
   }
 
+  async findMyPastAll(id: string) {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const events = await this.EventModel.find({
+      createUser: id,
+    });
+
+    const pastEvents = events.filter((event) => {
+      const eventDate = new Date(event['date']);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate < currentDate;
+    });
+
+    return pastEvents;
+  }
+
+  async findMyFutureAndCurrentAll(id: string) {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const events = await this.EventModel.find({
+      createUser: id,
+    });
+
+    const futureAndCurrentEvents = events.filter((event) => {
+      const eventDate = new Date(event['date']);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate >= currentDate;
+    });
+
+    return futureAndCurrentEvents;
+  }
+
   async findOne(id: string) {
     return await this.EventModel.findById(id);
   }

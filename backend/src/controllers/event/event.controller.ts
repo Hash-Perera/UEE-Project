@@ -36,6 +36,18 @@ export class EventController {
     return this.EventService.findMyAll(id);
   }
 
+  @Get('all/my/past')
+  findMyPastAll(@Request() req) {
+    const id = req.user.id;
+    return this.EventService.findMyPastAll(id);
+  }
+
+  @Get('all/my/future')
+  findMyFutureAndCurrentAll(@Request() req) {
+    const id = req.user.id;
+    return this.EventService.findMyFutureAndCurrentAll(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.EventService.findOne(id);
