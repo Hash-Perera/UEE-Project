@@ -7,11 +7,42 @@ import {
   SafeAreaView,
   Image,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 const { width, height } = Dimensions.get("window");
 import { LineChart } from "react-native-chart-kit";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const AnalyticsOrg = () => {
+  const [pastEventCount, setPastEventCount] = useState(0);
+  const [ongoingEventCount, setOngoingEventCount] = useState(0);
+
+  useEffect(() => {
+    getEventCount();
+  }, []);
+
+  const getEventCount = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .get(`/event/all/my/count`, apiConfig)
+      .then((response) => {
+        console.log(response.data);
+        setPastEventCount(response.data.pastEventsCount);
+        setOngoingEventCount(response.data.futureEventCount);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -87,7 +118,7 @@ const AnalyticsOrg = () => {
                   marginRight: width * 0.05,
                 }}
               >
-                16
+                {pastEventCount}
               </Text>
               <Image
                 source={require("../assets/images/one.png")}
@@ -107,7 +138,7 @@ const AnalyticsOrg = () => {
                   marginRight: width * 0.05,
                 }}
               >
-                3
+                {ongoingEventCount}
               </Text>
               <Image
                 source={require("../assets/images/hourglass.png")}
