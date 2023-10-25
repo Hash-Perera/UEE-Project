@@ -14,6 +14,8 @@ import {
 import React, { useState, useRef, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 const { width, height } = Dimensions.get("window");
 import {
   BottomSheetModal,
@@ -30,37 +32,36 @@ const GeneralEventDetails = ({ route }) => {
   const [ticketQty, setTicketQty] = useState(0);
   const [total, setTotal] = useState(price * ticketQty);
   console.log(total);
-  const [feedback, setFeedback] = useState("");
-  const [feedbackData, setFeedbackData] = useState([
-    {
-      id: "1",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "1",
-    },
-    {
-      id: "2",
-      userName: "Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "2",
-    },
-    {
-      id: "3",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "3",
-    },
-    {
-      id: "4",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "4",
-    },
-  ]);
+  const [feedbackData, setFeedbackData] = useState([]);
+
+  useEffect(() => {
+    getFeedbacks();
+  }, []);
+
+  //get feedbacks
+  const getFeedbacks = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const url = `/feedback/for-event/${item._id}`;
+    console.log(url);
+
+    axios
+      .get(`/feedback/for-event/${item._id}`, apiConfig)
+      .then((response) => {
+        console.log(response.data);
+        setFeedbackData(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   //navigation goback
   const navigation = useNavigation();
