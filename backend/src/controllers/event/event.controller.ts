@@ -30,6 +30,11 @@ export class EventController {
     return this.EventService.findAll();
   }
 
+  @Get('all/future')
+  findAllFuture() {
+    return this.EventService.findAllFuture();
+  }
+
   @Get('all/my')
   findMyAll(@Request() req) {
     const id = req.user.id;

@@ -17,6 +17,21 @@ export class EventService {
     return await this.EventModel.find();
   }
 
+  async findAllFuture() {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const events = await this.EventModel.find();
+
+    const futureAndCurrentEvents = events.filter((event) => {
+      const eventDate = new Date(event['date']);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate > currentDate;
+    });
+
+    return futureAndCurrentEvents;
+  }
+
   async findMyAll(id: string) {
     return await this.EventModel.find({ createUser: id });
   }
