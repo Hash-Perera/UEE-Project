@@ -22,7 +22,6 @@ import UserFeedbackCard from "../components/userFeedbackCard";
 
 const GeneralEventDetails = ({ route }) => {
   const { item } = route.params;
-  console.log(item._id);
 
   //setters
   const [modalVisible, setModalVisible] = useState(false);
