@@ -11,6 +11,7 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
+import * as Burnt from "burnt";
 import React, { useState, useRef, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
@@ -83,6 +84,35 @@ const GeneralEventDetails = ({ route }) => {
     const newTotal = price * ticketQty;
     setTotal(newTotal);
   }, [price, ticketQty]);
+
+  //buy alert
+  const buyAlert = () => {
+    Burnt.alert({
+      title: "Tickets Reserved",
+      duration: 1,
+    });
+  };
+
+  //buy ticket
+  const buyTicket = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    data = {
+      eventId: item._id,
+      quantity: ticketQty,
+      tot: total,
+    };
+    console.log(data);
+    buyAlert();
+    bottomSheetModalRef.current?.close();
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -252,6 +282,7 @@ const GeneralEventDetails = ({ route }) => {
                         }}
                         keyboardType="numeric"
                         label="0"
+                        placeholder="1"
                         onChangeText={(text) => setTicketQty(text)}
                       />
                     </View>
@@ -279,6 +310,7 @@ const GeneralEventDetails = ({ route }) => {
                     alignSelf: "center",
                     marginTop: height * 0.14,
                   }}
+                  onPress={buyTicket}
                 >
                   <Text style={styles.buyTicketText}>Buy</Text>
                 </TouchableOpacity>
