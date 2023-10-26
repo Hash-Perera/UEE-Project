@@ -12,6 +12,7 @@ import OrganizerHome from "./screens/organizerhome";
 import { useFonts } from "expo-font";
 import EventDetails from "./components/myeventdetails";
 import AllEventDetails from "./screens/allEventDetails";
+import SponsorDetailView from "./components/sponsorDetailView";
 import PublishSponsorship from "./screens/publishSposorShip";
 import PastEventDetails from "./components/pasteventdetails";
 import EventForm from "./components/createevent";
@@ -97,6 +98,11 @@ export default function App() {
           <Stack.Screen
             name="PublishSponsorship"
             component={PublishSponsorship}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SponsorDetailView"
+            component={SponsorDetailView}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

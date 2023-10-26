@@ -13,9 +13,10 @@ const { width, height } = Dimensions.get("window");
 
 const UserEventCard = ({ item, handleCardPress }) => {
   const totalStars = 5;
+  const randomNum = Math.floor(Math.random() * totalStars) + 1;
 
   return (
-    <TouchableOpacity onPress={() => handleCardPress(item.id)}>
+    <TouchableOpacity onPress={() => handleCardPress(item)}>
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
           <Image
@@ -26,17 +27,17 @@ const UserEventCard = ({ item, handleCardPress }) => {
         </View>
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>{item.eventName}</Text>
-          <Text>Event Date: {item.eventDate}</Text>
-          <Text>Event Location: {item.eventlocation}</Text>
-          <Text>Time: {item.eventTime}</Text>
+          <Text>Event Date: {item.date}</Text>
+          {/* <Text>Event Location: {item.location}</Text> */}
+          <Text>Time: {item.time}</Text>
           <View style={styles.ratingBar}>
-            {Array.from({ length: item.gainStars }, (x, i) => {
+            {Array.from({ length: randomNum }, (x, i) => {
               return (
                 <MaterialIcons key={i} name="star" size={30} color="#FFA000" />
               );
             })}
 
-            {Array.from({ length: totalStars - item.gainStars }, (x, i) => {
+            {Array.from({ length: totalStars - randomNum }, (x, i) => {
               return (
                 <MaterialIcons
                   key={i}

@@ -10,48 +10,60 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import * as Burnt from "burnt";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import { Provider } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import DropDown from "react-native-paper-dropdown";
 const { width, height } = Dimensions.get("window");
 import UserFeedbackCard from "../components/userFeedbackCard";
 
 const GeneralEventDetails = ({ route }) => {
+  const { item } = route.params;
+
+  //setters
   const [modalVisible, setModalVisible] = useState(false);
   const [feedback, setFeedback] = useState("");
-  const [feedbackData, setFeedbackData] = useState([
-    {
-      id: "1",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "1",
-    },
-    {
-      id: "2",
-      userName: "Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "2",
-    },
-    {
-      id: "3",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "3",
-    },
-    {
-      id: "4",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "4",
-    },
-  ]);
+  const [feedbackData, setFeedbackData] = useState([]);
 
+  const toastMessage = () => {
+    Burnt.toast({
+      title: "Feedback Added",
+      preset: "done",
+      message: "Your feedback has been added successfully",
+    });
+  };
+
+  useEffect(() => {
+    getFeedbacks();
+  }, []);
+
+  //get feedbacks
+  const getFeedbacks = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .get(`/feedback/for-event/${item._id}`, apiConfig)
+      .then((response) => {
+        console.log(response.data);
+        setFeedbackData(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  //submit feedback
   const submitFeedback = async () => {
     console.log(feedback);
     const AuthToken = await AsyncStorage.getItem("token");
@@ -64,15 +76,19 @@ const GeneralEventDetails = ({ route }) => {
     };
 
     const data = {
-      eventId: "Event eke mongo Id eka dpm",
+      eventId: item._id,
       feedback: feedback,
+      rating: ratingValue,
     };
+
+    console.log(data);
 
     axios
       .post("/feedback/create", data, apiConfig)
       .then((response) => {
-        setList(response.data);
         console.log(response.data);
+        toastMessage();
+        getFeedbacks();
       })
       .catch((e) => {
         console.log(e);
@@ -80,19 +96,19 @@ const GeneralEventDetails = ({ route }) => {
     setModalVisible(false);
   };
 
+  //open feedback modal
   const openFeedbackModal = () => {
     setModalVisible(true);
     console.log("Feedback Modal Opened");
   };
 
-  const { item } = route.params;
-  console.log(item);
-
+  //navigation
   const navigation = useNavigation();
   const handleBack = () => {
     navigation.goBack();
   };
 
+  //rating dropDawn
   const [showDropDown, setShowDropDown] = useState(false);
   const [ratingValue, setratingValue] = useState("");
 
@@ -133,12 +149,9 @@ const GeneralEventDetails = ({ route }) => {
           <TouchableOpacity style={styles.backButton} onPress={handleBack}>
             <Image source={require("../assets/images/backIcon.png")} />
           </TouchableOpacity>
-          <Text style={styles.eventTitle}>Viramaya</Text>
+          <Text style={styles.eventTitle}>{item.eventName}</Text>
           <Text style={styles.eventDesc} numberOfLines={3}>
-            The SLIIT was established in 1999 to educate and train IT ...
-            Wiramaya – විරාමය 2022 organized by Faculty of Computing Student
-            Community (FCSC) of SLIIT will be held on 26th of February 2022 at
-            SLIIT Malabe Campus.
+            {item.description}
           </Text>
         </View>
         <View style={styles.photos}>
@@ -149,7 +162,7 @@ const GeneralEventDetails = ({ route }) => {
         <View style={styles.eventDetails}>
           <Text>
             <Text style={{ fontWeight: "bold", color: "gray" }}>Date: </Text>
-            26th February 2022
+            {item.date}
           </Text>
           <View
             style={{
@@ -159,12 +172,12 @@ const GeneralEventDetails = ({ route }) => {
           >
             <Text>
               <Text style={{ fontWeight: "bold", color: "gray" }}>Time: </Text>
-              8.00 am
+              {item.time}
             </Text>
-            <Text>
+            {/* <Text>
               <Text style={{ fontWeight: "bold", color: "gray" }}>Venue: </Text>
-              SLIIT Malabe Campus
-            </Text>
+              {item.location}
+            </Text> */}
           </View>
           <View
             style={{
@@ -264,6 +277,7 @@ const GeneralEventDetails = ({ route }) => {
 
 export default GeneralEventDetails;
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

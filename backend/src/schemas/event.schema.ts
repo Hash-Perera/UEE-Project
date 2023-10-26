@@ -38,6 +38,9 @@ export class Event {
   @Prop()
   description: string;
 
+  @Prop({ type: [String] })
+  images: Record<string, any>;
+
   @Prop({ type: Types.ObjectId, ref: 'User' })
   createUser: Types.ObjectId;
 }
