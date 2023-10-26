@@ -10,6 +10,7 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
+import * as Burnt from "burnt";
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
@@ -27,6 +28,14 @@ const GeneralEventDetails = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [feedbackData, setFeedbackData] = useState([]);
+
+  const toastMessage = () => {
+    Burnt.toast({
+      title: "Feedback Added",
+      preset: "done",
+      message: "Your feedback has been added successfully",
+    });
+  };
 
   useEffect(() => {
     getFeedbacks();
@@ -78,6 +87,7 @@ const GeneralEventDetails = ({ route }) => {
       .post("/feedback/create", data, apiConfig)
       .then((response) => {
         console.log(response.data);
+        toastMessage();
         getFeedbacks();
       })
       .catch((e) => {
