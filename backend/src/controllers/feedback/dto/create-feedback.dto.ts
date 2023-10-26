@@ -7,6 +7,9 @@ export class CreateFeedbackDto {
   @IsOptional()
   date: string;
 
+  @IsOptional()
+  rating: number;
+
   @IsNotEmpty()
   eventId: string;
 

@@ -35,5 +35,8 @@ export class CreateEventDto {
   description: string;
 
   @IsOptional()
+  images: string[];
+
+  @IsOptional()
   createUser: string;
 }

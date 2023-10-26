@@ -11,9 +11,12 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
+import * as Burnt from "burnt";
 import React, { useState, useRef, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 const { width, height } = Dimensions.get("window");
 import {
   BottomSheetModal,
@@ -22,50 +25,51 @@ import {
 import UserFeedbackCard from "../components/userFeedbackCard";
 
 const GeneralEventDetails = ({ route }) => {
-  const [price, setPrice] = useState(500);
-  const [ticketQty, setTicketQty] = useState(0);
-  const [total, setTotal] = useState(price * ticketQty);
-  console.log(total);
-  const [feedback, setFeedback] = useState("");
-  const [feedbackData, setFeedbackData] = useState([
-    {
-      id: "1",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "1",
-    },
-    {
-      id: "2",
-      userName: "Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "2",
-    },
-    {
-      id: "3",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "3",
-    },
-    {
-      id: "4",
-      userName: "John Doe",
-      feedback: "This is a very good event. I really enjoyed it.",
-      userImage: require("../assets/images/user.png"),
-      rating: "4",
-    },
-  ]);
-
   const { item } = route.params;
   console.log(item);
 
+  //setters
+  const [price, setPrice] = useState(item.ticketPrice);
+  const [ticketQty, setTicketQty] = useState(0);
+  const [total, setTotal] = useState(price * ticketQty);
+  const [feedbackData, setFeedbackData] = useState([]);
+
+  useEffect(() => {
+    getFeedbacks();
+  }, []);
+
+  //get feedbacks
+  const getFeedbacks = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const url = `/feedback/for-event/${item._id}`;
+    console.log(url);
+
+    axios
+      .get(`/feedback/for-event/${item._id}`, apiConfig)
+      .then((response) => {
+        console.log(response.data);
+        setFeedbackData(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  //navigation goback
   const navigation = useNavigation();
   const handleBack = () => {
     navigation.navigate("GeneralNavigation");
   };
 
+  //BottomSheet
   const bottomSheetModalRef = useRef(null);
 
   const snapPoints = ["74%"];
@@ -74,10 +78,39 @@ const GeneralEventDetails = ({ route }) => {
     bottomSheetModalRef.current?.present();
   };
 
+  //price calculation
   useEffect(() => {
     const newTotal = price * ticketQty;
     setTotal(newTotal);
   }, [price, ticketQty]);
+
+  //buy alert
+  const buyAlert = () => {
+    Burnt.alert({
+      title: "Tickets Reserved",
+      duration: 1,
+    });
+  };
+
+  //buy ticket
+  const buyTicket = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    data = {
+      eventId: item._id,
+      quantity: ticketQty,
+    };
+    console.log(data);
+    buyAlert();
+    bottomSheetModalRef.current?.close();
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -94,12 +127,9 @@ const GeneralEventDetails = ({ route }) => {
             <TouchableOpacity style={styles.backButton} onPress={handleBack}>
               <Image source={require("../assets/images/backIcon.png")} />
             </TouchableOpacity>
-            <Text style={styles.eventTitle}>Viramaya</Text>
+            <Text style={styles.eventTitle}>{item.eventName}</Text>
             <Text style={styles.eventDesc} numberOfLines={3}>
-              The SLIIT was established in 1999 to educate and train IT ...
-              Wiramaya – විරාමය 2022 organized by Faculty of Computing Student
-              Community (FCSC) of SLIIT will be held on 26th of February 2022 at
-              SLIIT Malabe Campus.
+              {item.description}
             </Text>
           </View>
           <View style={styles.photos}>
@@ -113,7 +143,7 @@ const GeneralEventDetails = ({ route }) => {
                 <Text style={{ fontWeight: "bold", color: "gray" }}>
                   Date:{" "}
                 </Text>
-                26th February 2022
+                {item.date}
               </Text>
               <View
                 style={{
@@ -125,13 +155,13 @@ const GeneralEventDetails = ({ route }) => {
                   <Text style={{ fontWeight: "bold", color: "gray" }}>
                     Time:{" "}
                   </Text>
-                  8.00 am
+                  {item.time}
                 </Text>
                 <Text>
                   <Text style={{ fontWeight: "bold", color: "gray" }}>
                     Venue:{" "}
                   </Text>
-                  SLIIT Malabe Campus
+                  {item.location}
                 </Text>
               </View>
               <View
@@ -195,11 +225,11 @@ const GeneralEventDetails = ({ route }) => {
                   />
                 </View>
                 <View style={styles.bottomDetails}>
-                  <Text style={styles.bEvent}>Wiramaya</Text>
+                  <Text style={styles.bEvent}>{item.eventName}</Text>
                   <View>
-                    <Text style={styles.subDetails}>Date : 26th Feb 2022</Text>
+                    <Text style={styles.subDetails}>Date : {item.date}</Text>
                     <Text style={styles.subDetails}>
-                      Location : SLIIT Premises
+                      Location : {item.location}
                     </Text>
                     <Text style={styles.subDetails}>Duration : 4h</Text>
                   </View>
@@ -219,7 +249,7 @@ const GeneralEventDetails = ({ route }) => {
                       Available Tickets :{" "}
                       <Text style={{ color: "red", fontWeight: "bold" }}>
                         {" "}
-                        10
+                        {item.ticketCount - item.soldTickets}
                       </Text>
                     </Text>
                   </View>
@@ -229,7 +259,9 @@ const GeneralEventDetails = ({ route }) => {
                       justifyContent: "space-around",
                     }}
                   >
-                    <Text style={styles.subDetails}>Price : Rs. {price}</Text>
+                    <Text style={styles.subDetails}>
+                      Price : Rs. {item.ticketPrice}
+                    </Text>
                     <View
                       style={{
                         flexDirection: "row",
@@ -248,6 +280,7 @@ const GeneralEventDetails = ({ route }) => {
                         }}
                         keyboardType="numeric"
                         label="0"
+                        placeholder="1"
                         onChangeText={(text) => setTicketQty(text)}
                       />
                     </View>
@@ -275,6 +308,7 @@ const GeneralEventDetails = ({ route }) => {
                     alignSelf: "center",
                     marginTop: height * 0.14,
                   }}
+                  onPress={buyTicket}
                 >
                   <Text style={styles.buyTicketText}>Buy</Text>
                 </TouchableOpacity>
@@ -289,6 +323,7 @@ const GeneralEventDetails = ({ route }) => {
 
 export default GeneralEventDetails;
 
+//styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

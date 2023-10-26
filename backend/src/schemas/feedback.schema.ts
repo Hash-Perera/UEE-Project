@@ -11,6 +11,9 @@ export class Feedback {
   @Prop()
   date: string;
 
+  @Prop()
+  rating: number;
+
   @Prop({ type: Types.ObjectId, ref: 'Event' })
   eventId: Types.ObjectId;
 

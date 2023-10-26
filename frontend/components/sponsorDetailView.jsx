@@ -62,7 +62,7 @@ const SponsorDetailView = ({ route }) => {
                 mode="outlined"
                 placeholder="Budget"
                 style={styles.input}
-                value={budget}
+                value={`${budget}`}
                 onChangeText={(text) => setBudget(text)}
               />
               <TextInput
