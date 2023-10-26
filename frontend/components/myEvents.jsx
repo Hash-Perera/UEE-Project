@@ -104,7 +104,7 @@ const Myevents = () => {
       .get("/event/all", apiConfig)
       .then((response) => {
         setevents(response.data);
-        console.log(response.data);
+        
       })
       .catch((e) => {
         console.log(e);
