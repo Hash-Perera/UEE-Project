@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+import { LocationEventEmitter } from "expo-location/build/LocationEventEmitter";
 
 const { width, height } = Dimensions.get("window");
 
@@ -59,12 +60,14 @@ export default function Home() {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
+      
         setErrorMsg("Permission to access location was denied");
         return;
       }
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+      console.log(location);
     })();
   }, []);
 
