@@ -18,6 +18,7 @@ import axios from "axios";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { LocationEventEmitter } from "expo-location/build/LocationEventEmitter";
+import Maps from "../components/Maps";
 
 const { width, height } = Dimensions.get("window");
 
@@ -60,7 +61,6 @@ export default function Home() {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-      
         setErrorMsg("Permission to access location was denied");
         return;
       }
@@ -80,34 +80,10 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.topContainer}>
-          {errorMsg ? (
-            <Text>{errorMsg}</Text>
-          ) : location ? (
-            <MapView
-              style={styles.map}
-              initialRegion={{
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-            >
-              <Marker
-                coordinate={{
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
-                }}
-                title="My Location"
-                description="This is where I am"
-              />
-            </MapView>
-          ) : (
-            <Text>Loading...</Text>
-          )}
-        </View>
-      </ScrollView>
+      <View style={styles.topContainer}>
+        <Maps />
+      </View>
+
       <View style={styles.bottomContainer}>
         <Text style={styles.title}>Upcoming Events</Text>
 
@@ -132,7 +108,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   topContainer: {
-    flex: 1,
+    flex: 5,
   },
 
   map: {
@@ -145,7 +121,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.06,
   },
   bottomContainer: {
-    flex: 6,
+    flex: 2,
     shadowColor: "#000",
     marginHorizontal: width * 0.02,
     borderRadius: height * 0.04,

@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -35,39 +35,30 @@ const EventForm = () => {
   const [eventdescription, seteventdescription] = useState("");
   const [images, setImages] = useState([]);
   const [errorMsg, setErrorMsg] = useState(null);
-  let locationobject
- 
+  const [locationObj, setLocationObj] = useState(null);
 
-const locationtrack=async()=>{
-  
+  const locationtrack = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      
       setErrorMsg("Permission to access location was denied");
       return;
     }
 
     const locate = await Location.getCurrentPositionAsync({});
     setLocation(locate);
-    
-    locationobject={
-      longitude:locate.coords.longitude,
-      lattitude:locate.coords.latitude,
+
+    const locationObjjj = {
+      longitude: locate.coords.longitude,
+      lattitude: locate.coords.latitude,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
-    }
-    console.log(locationobject);
-   
+    };
+    setLocationObj(locationObjjj);
   };
 
-
-
-// Get user's current location
+  // Get user's current location
   useEffect(() => {
     locationtrack();
-    
-    
-    
   }, []);
 
   const handleSubmit = async () => {
@@ -88,7 +79,7 @@ const locationtrack=async()=>{
     const data = {
       eventName: eventName,
       eventType: eventType,
-      location: locationobject,
+      location: locationObj,
       time: formattedTime,
       date: time.toISOString().split("T")[0],
       expectedCrowd: expectedCrowd,
@@ -108,9 +99,11 @@ const locationtrack=async()=>{
       },
     };
 
+    console.log(data);
+
     // Your API call to save data in MongoDB
     axios
-      .post("/event/create", data,apiConfig)
+      .post("/event/create", data, apiConfig)
       .then((response) => {
         console.log(response.data);
         navigation.goBack();
@@ -150,7 +143,7 @@ const locationtrack=async()=>{
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
-        resolve(reader.result.split(',')[1]); // Extract the base64-encoded part
+        resolve(reader.result.split(",")[1]); // Extract the base64-encoded part
       };
       reader.onerror = (error) => {
         reject(error);
@@ -209,9 +202,6 @@ const locationtrack=async()=>{
                 keyExtractor={(item, index) => index.toString()}
               />
             </View>
-
-            
-           
 
             {showTimePicker && (
               <DateTimePicker
@@ -315,7 +305,10 @@ const locationtrack=async()=>{
               multiline
             />
 
-            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={handleSubmit}
+            >
               <Text style={styles.submitButtonText}>Submit</Text>
             </TouchableOpacity>
           </View>

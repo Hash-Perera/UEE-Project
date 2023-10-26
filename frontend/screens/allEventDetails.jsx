@@ -174,10 +174,10 @@ const GeneralEventDetails = ({ route }) => {
               <Text style={{ fontWeight: "bold", color: "gray" }}>Time: </Text>
               {item.time}
             </Text>
-            <Text>
+            {/* <Text>
               <Text style={{ fontWeight: "bold", color: "gray" }}>Venue: </Text>
               {item.location}
-            </Text>
+            </Text> */}
           </View>
           <View
             style={{

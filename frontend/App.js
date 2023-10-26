@@ -20,7 +20,7 @@ import UpdateEvent from "./components/updateevent";
 import axios from "axios";
 const Stack = createStackNavigator();
 
-axios.defaults.baseURL = "http://192.168.1.17:3001";
+axios.defaults.baseURL = "http://192.168.8.198:3001";
 
 export default function App() {
   const [fontloaded] = useFonts({

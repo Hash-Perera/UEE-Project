@@ -28,7 +28,7 @@ const UserEventCard = ({ item, handleCardPress }) => {
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>{item.eventName}</Text>
           <Text>Event Date: {item.date}</Text>
-          <Text>Event Location: {item.location}</Text>
+          {/* <Text>Event Location: {item.location}</Text> */}
           <Text>Time: {item.time}</Text>
           <View style={styles.ratingBar}>
             {Array.from({ length: randomNum }, (x, i) => {

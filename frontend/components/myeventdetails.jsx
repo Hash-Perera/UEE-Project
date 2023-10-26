@@ -95,7 +95,7 @@ const EventDetails = ({ route }) => {
               style={{ flexDirection: "row", gap: 6, marginTop: height * 0.02 }}
             >
               <Text style={styles.eventtitle}>Venue:</Text>
-              <Text style={styles.eventdetails}> {event.location}</Text>
+              {/* <Text style={styles.eventdetails}> {event.location}</Text> */}
             </View>
             <View style={{ gap: 10, marginTop: height * 0.05 }}>
               <Text style={styles.eventtitle}>Event Description:</Text>
