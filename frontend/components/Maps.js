@@ -18,9 +18,6 @@ export default function Maps() {
   const [eventLocation, setEventLocation] = useState([]);
 
   const getUserLocation = async () => {
-    console.log(
-      "llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll"
-    );
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       setErrorMsg("Permission Denied");
@@ -28,7 +25,6 @@ export default function Maps() {
     let location = await Location.getCurrentPositionAsync({
       enableHighAccuracy: true,
     });
-    console.log(location);
 
     setCurrentLocation({
       latitude: location.coords.latitude,
@@ -52,6 +48,7 @@ export default function Maps() {
       .get("/event/all", apiConfig)
       .then((response) => {
         console.log(response.data);
+        setEventLocation(response.data);
       })
       .catch((e) => {
         console.log(e);
@@ -84,7 +81,7 @@ export default function Maps() {
       const distance = getNearLocations(
         currentLocation.latitude,
         currentLocation.longitude,
-        event.location.lattitude,
+        event.location.latitude,
         event.location.longitude
       );
 
