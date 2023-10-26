@@ -107,9 +107,17 @@ const GeneralEventDetails = ({ route }) => {
       eventId: item._id,
       quantity: ticketQty,
     };
-    console.log(data);
-    buyAlert();
-    bottomSheetModalRef.current?.close();
+
+    axios
+      .post("/event/buy-ticket", data, apiConfig)
+      .then((response) => {
+        console.log(response.data);
+        buyAlert();
+        bottomSheetModalRef.current?.close();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   return (
