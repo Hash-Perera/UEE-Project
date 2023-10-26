@@ -5,8 +5,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  Animated,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 const GetStarted = () => {
@@ -16,15 +17,27 @@ const GetStarted = () => {
     navigation.navigate("Login");
   };
 
+  const fadeAnim = new Animated.Value(0);
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../assets/images/EventGoSplash.png")}
-        style={styles.logo}
-      />
-      <TouchableOpacity style={styles.loginButton} onPress={handleGetStarted}>
-        <Text style={styles.loginButtonText}>Get Started</Text>
-      </TouchableOpacity>
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <Image
+          source={require("../assets/images/EventGoSplash.png")}
+          style={styles.logo}
+        />
+        <TouchableOpacity style={styles.loginButton} onPress={handleGetStarted}>
+          <Text style={styles.loginButtonText}>Get Started</Text>
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
 };
@@ -51,7 +64,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#16213E",
     padding: 15,
     borderRadius: 25,
+    justifyContent: "center",
     alignItems: "center",
+    alignContent: "center",
+    alignSelf: "center",
     width: width * 0.65,
     marginTop: height * 0.05,
   },

@@ -34,7 +34,7 @@ const EventAnalytics = ({ pastevent }) => {
   const barChartConfig = {
     backgroundGradientFrom: "#f9f9f9",
     backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: "#f9f9f9",
+    backgroundGradientTo: "#ffa726",
     backgroundGradientToOpacity: 0.5,
     color: (opacity = 3) => `rgba(0, 0, 0, ${opacity})`,
   };
@@ -50,7 +50,7 @@ const EventAnalytics = ({ pastevent }) => {
     {
       name: "Available Tickets",
       ticket: allTickets,
-      color: "green",
+      color: "#ffa726",
       legendFontColor: "#7F7F7F",
       legendFontSize: 12,
     },
@@ -71,6 +71,7 @@ const EventAnalytics = ({ pastevent }) => {
         data: [100, 80],
       },
     ],
+    color: "#ffa726",
   };
 
   return (

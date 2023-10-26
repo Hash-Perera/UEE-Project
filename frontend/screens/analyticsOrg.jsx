@@ -16,10 +16,32 @@ import axios from "axios";
 const AnalyticsOrg = () => {
   const [pastEventCount, setPastEventCount] = useState(0);
   const [ongoingEventCount, setOngoingEventCount] = useState(0);
+  const [pastEventData, setPastEventData] = useState([]);
 
   useEffect(() => {
     getEventCount();
+    getPastData();
   }, []);
+
+  const getPastData = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .get(`/event/all/my/past`, apiConfig)
+      .then((response) => {
+        setPastEventData(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   const getEventCount = async () => {
     const AuthToken = await AsyncStorage.getItem("token");
@@ -34,7 +56,6 @@ const AnalyticsOrg = () => {
     axios
       .get(`/event/all/my/count`, apiConfig)
       .then((response) => {
-        console.log(response.data);
         setPastEventCount(response.data.pastEventsCount);
         setOngoingEventCount(response.data.futureEventCount);
       })
@@ -42,6 +63,14 @@ const AnalyticsOrg = () => {
         console.log(e);
       });
   };
+
+  const chartLabels = pastEventData.map((event) => {
+    return event.date;
+  });
+
+  const chartData = pastEventData.map((event) => {
+    return event.expectedBudget;
+  });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -64,17 +93,10 @@ const AnalyticsOrg = () => {
         <View style={styles.bottomContent}>
           <LineChart
             data={{
-              labels: ["January", "February", "March", "April", "May", "June"],
+              labels: chartLabels,
               datasets: [
                 {
-                  data: [
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                  ],
+                  data: chartData,
                 },
               ],
             }}
