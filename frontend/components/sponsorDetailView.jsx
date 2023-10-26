@@ -40,7 +40,7 @@ const SponsorDetailView = ({ route }) => {
       .delete(`/sponsor/delete/${item._id}`, apiConfig)
       .then((response) => {
         console.log(response.data);
-        navigation.goBack();
+        navigation.navigate("Sponsor Dashboard");
       })
       .catch((e) => {
         console.log(e);
