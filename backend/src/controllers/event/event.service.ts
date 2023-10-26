@@ -107,4 +107,10 @@ export class EventService {
   async update(id: string, dto: CreateEventDto) {
     return await this.EventModel.findByIdAndUpdate(id, dto);
   }
+
+  async buyTickets(eventId: string, ticketCount: number) {
+    const filter = { _id: eventId };
+    const update = { $inc: { soldTickets: ticketCount } };
+    return this.EventModel.updateOne(filter, update).exec();
+  }
 }

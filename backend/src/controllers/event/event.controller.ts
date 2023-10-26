@@ -73,4 +73,9 @@ export class EventController {
   update(@Param('id') id: string, @Body() dto: CreateEventDto) {
     return this.EventService.update(id, dto);
   }
+
+  @Post('buy-ticket')
+  buyTickets(@Body() data) {
+    return this.EventService.buyTickets(data.eventId, data.quantity);
+  }
 }
