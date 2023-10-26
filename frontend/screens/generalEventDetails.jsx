@@ -32,7 +32,6 @@ const GeneralEventDetails = ({ route }) => {
   const [price, setPrice] = useState(item.ticketPrice);
   const [ticketQty, setTicketQty] = useState(0);
   const [total, setTotal] = useState(price * ticketQty);
-  console.log(total);
   const [feedbackData, setFeedbackData] = useState([]);
 
   useEffect(() => {
@@ -107,7 +106,6 @@ const GeneralEventDetails = ({ route }) => {
     data = {
       eventId: item._id,
       quantity: ticketQty,
-      tot: total,
     };
     console.log(data);
     buyAlert();
