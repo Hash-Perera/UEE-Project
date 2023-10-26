@@ -17,6 +17,10 @@ const AnalyticsOrg = () => {
   const [pastEventCount, setPastEventCount] = useState(0);
   const [ongoingEventCount, setOngoingEventCount] = useState(0);
   const [pastEventData, setPastEventData] = useState([]);
+  const [isTrue, setIsTrue] = useState(false);
+
+  /*   var chartLabels = [];
+  var chartData = []; */
 
   useEffect(() => {
     getEventCount();
@@ -37,11 +41,20 @@ const AnalyticsOrg = () => {
       .get(`/event/all/my/past`, apiConfig)
       .then((response) => {
         setPastEventData(response.data);
+        setIsTrue(true);
       })
       .catch((e) => {
         console.log(e);
       });
   };
+
+  const chartLabels = pastEventData.map((event) => {
+    return event.date;
+  });
+
+  const chartData = pastEventData.map((event) => {
+    return event.expectedBudget;
+  });
 
   const getEventCount = async () => {
     const AuthToken = await AsyncStorage.getItem("token");
@@ -64,14 +77,6 @@ const AnalyticsOrg = () => {
       });
   };
 
-  const chartLabels = pastEventData.map((event) => {
-    return event.date;
-  });
-
-  const chartData = pastEventData.map((event) => {
-    return event.expectedBudget;
-  });
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -90,44 +95,46 @@ const AnalyticsOrg = () => {
             />
           </View>
         </View>
-        <View style={styles.bottomContent}>
-          <LineChart
-            data={{
-              labels: chartLabels,
-              datasets: [
-                {
-                  data: chartData,
+        {isTrue && (
+          <View style={styles.bottomContent}>
+            <LineChart
+              data={{
+                labels: chartLabels,
+                datasets: [
+                  {
+                    data: chartData,
+                  },
+                ],
+              }}
+              width={Dimensions.get("window").width * 0.99} // from react-native
+              height={230}
+              yAxisLabel="$"
+              yAxisSuffix="k"
+              yAxisInterval={1} // optional, defaults to 1
+              chartConfig={{
+                backgroundColor: "#e26a00",
+                backgroundGradientFrom: "#fb8c00",
+                backgroundGradientTo: "#ffa726",
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                  borderRadius: 16,
                 },
-              ],
-            }}
-            width={Dimensions.get("window").width * 0.99} // from react-native
-            height={230}
-            yAxisLabel="$"
-            yAxisSuffix="k"
-            yAxisInterval={1} // optional, defaults to 1
-            chartConfig={{
-              backgroundColor: "#e26a00",
-              backgroundGradientFrom: "#fb8c00",
-              backgroundGradientTo: "#ffa726",
-              decimalPlaces: 2, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
+                propsForDots: {
+                  r: "6",
+                  strokeWidth: "2",
+                  stroke: "#ffa726",
+                },
+              }}
+              bezier
+              style={{
+                marginVertical: 8,
                 borderRadius: 16,
-              },
-              propsForDots: {
-                r: "6",
-                strokeWidth: "2",
-                stroke: "#ffa726",
-              },
-            }}
-            bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
-          />
-        </View>
+              }}
+            />
+          </View>
+        )}
         <View style={styles.funContainer}>
           <TouchableOpacity style={styles.fun}>
             <View
