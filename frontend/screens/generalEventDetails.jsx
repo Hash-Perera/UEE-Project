@@ -11,7 +11,6 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
-import * as Burnt from "burnt";
 import React, { useState, useRef, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
@@ -84,14 +83,6 @@ const GeneralEventDetails = ({ route }) => {
     setTotal(newTotal);
   }, [price, ticketQty]);
 
-  //buy alert
-  const buyAlert = () => {
-    Burnt.alert({
-      title: "Tickets Reserved",
-      duration: 1,
-    });
-  };
-
   //buy ticket
   const buyTicket = async () => {
     const AuthToken = await AsyncStorage.getItem("token");
@@ -112,7 +103,6 @@ const GeneralEventDetails = ({ route }) => {
       .post("/event/buy-ticket", data, apiConfig)
       .then((response) => {
         console.log(response.data);
-        buyAlert();
         bottomSheetModalRef.current?.close();
       })
       .catch((e) => {
@@ -236,9 +226,9 @@ const GeneralEventDetails = ({ route }) => {
                   <Text style={styles.bEvent}>{item.eventName}</Text>
                   <View>
                     <Text style={styles.subDetails}>Date : {item.date}</Text>
-                    <Text style={styles.subDetails}>
+                    {/* <Text style={styles.subDetails}>
                       Location : {item.location}
-                    </Text>
+                    </Text> */}
                     <Text style={styles.subDetails}>Duration : 4h</Text>
                   </View>
                 </View>
