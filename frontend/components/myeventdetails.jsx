@@ -13,6 +13,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { Feather } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get("window");
 
@@ -22,7 +24,11 @@ const EventDetails = ({ route }) => {
 
   const renderItem = ({ item }) => (
     <View style={styles.imageContainer}>
-      <Image source={item} style={styles.image} resizeMode="contain" />
+      <Image
+        source={{ uri: `data:image/jpeg;base64,${item}` }}
+        style={styles.image}
+        resizeMode="contain"
+      />
     </View>
   );
 
@@ -57,12 +63,11 @@ const EventDetails = ({ route }) => {
     <SafeAreaView>
       <ScrollView style={styles.scrollViewContent}>
         <View>
-          {/* <FlatList
+          <FlatList
             data={event.images}
-            keyExtractor={(item, index) => index.toString()}
             renderItem={renderItem}
-            horizontal
-  />*/}
+            horizontal={true}
+          />
         </View>
 
         <View style={styles.container}>
@@ -91,12 +96,7 @@ const EventDetails = ({ route }) => {
               <Text style={styles.eventdetails}> {event.eventName}</Text>
             </View>
 
-            <View
-              style={{ flexDirection: "row", gap: 6, marginTop: height * 0.02 }}
-            >
-              <Text style={styles.eventtitle}>Venue:</Text>
-              {/* <Text style={styles.eventdetails}> {event.location}</Text> */}
-            </View>
+           
             <View style={{ gap: 10, marginTop: height * 0.05 }}>
               <Text style={styles.eventtitle}>Event Description:</Text>
               <Text style={styles.eventdescription}> {event.description}</Text>
@@ -129,14 +129,14 @@ const EventDetails = ({ route }) => {
                 style={styles.updateButton}
                 onPress={() => updateevent(event)}
               >
-                <Text style={styles.updateButtonText}>Update</Text>
+                <Feather name="edit" size={24} color="black" />
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={styles.DeleteButton}
                 onPress={() => deleteevent(event)}
               >
-                <Text style={styles.DeleteButtonText}>Delete</Text>
+                <AntDesign name="delete" size={24} color="black" />
               </TouchableOpacity>
             </View>
           </View>
@@ -257,18 +257,19 @@ const styles = StyleSheet.create({
     borderRadius: width * 0.2,
   },
   updateButton: {
-    backgroundColor: "#125225",
+    backgroundColor: "rgba(254, 254, 250, 0.8)",
     padding: 10,
     borderRadius: 25,
     alignItems: "center",
     width: width * 0.3,
     marginTop: height * 0.05,
+    elevation: 4
   },
   scrollViewContent: {
     flexGrow: 1,
   },
   updateButtonText: {
-    color: "#fff",
+    color: "76, 175, 80",
     fontSize: 15,
     fontWeight: "bold",
   },
@@ -279,11 +280,12 @@ const styles = StyleSheet.create({
     fontFamily: "DMMedium",
   },
   DeleteButton: {
-    backgroundColor: "darkred",
+    backgroundColor: "rgba(155, 0, 0, 0.8)", 
     padding: 10,
     borderRadius: 25,
     alignItems: "center",
     width: width * 0.3,
     marginTop: height * 0.05,
+    elevation: 4,
   },
 });

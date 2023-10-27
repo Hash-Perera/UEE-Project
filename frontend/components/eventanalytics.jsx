@@ -4,22 +4,25 @@ import { PieChart, BarChart } from "react-native-chart-kit";
 
 const { width, height } = Dimensions.get("window");
 
-const EventAnalytics = ({ pastevent }) => {
-  const [event, setEvent] = useState(pastevent);
-  const [budget, setBudget] = useState(pastevent.totalBudget);
-  const [ticket, setTicket] = useState(Number(pastevent.soldTickets) || 0);
-  const [allTickets, setAllTickets] = useState(
-    Number(pastevent.alltickets) || 0
-  );
-  const [crowd, setCrowd] = useState(Number(pastevent.participatedCrowd));
-  const [expectedCrowd, setExpectedCrowd] = useState(
-    Number(pastevent.expectedCrowd)
-  );
-  const [expectedBudget, setExpectedBudget] = useState(
-    Number(pastevent.expectedBudget)
-  );
+const EventAnalytics = ({ eventinfo }) => {
 
-  console.log(pastevent);
+  
+ 
+ //const [event, setEvent] = useState(pastevent);
+ // const [budget, setBudget] = useState(pastevent);
+  //const [ticket, setTicket] = useState(Number(pastevent.soldTickets) || 0);
+ // const [allTickets, setAllTickets] = useState(
+ //   Number(pastevent.ticketCount) || 0
+ // );
+ // const [crowd, setCrowd] = useState(Number(pastevent.participatedCrowd));
+ // const [expectedCrowd, setExpectedCrowd] = useState(
+//    Number(pastevent.expectedCrowd)
+ //);
+ // const [expectedBudget, setExpectedBudget] = useState(
+   // Number(pastevent.expectedBudget)
+  //);
+
+  console.log(eventinfo);
   const pieChartConfig = {
     backgroundGradientFrom: "#f9f9f9",
     backgroundGradientFromOpacity: 0,
@@ -42,14 +45,14 @@ const EventAnalytics = ({ pastevent }) => {
   const pieChartData = [
     {
       name: "Sold Tickets",
-      ticket: ticket,
+      ticket: eventinfo.soldTickets,
       color: "darkred",
       legendFontColor: "#7F7F7F",
       legendFontSize: 12,
     },
     {
       name: "Available Tickets",
-      ticket: allTickets,
+      ticket: eventinfo.ticketCount,
       color: "#ffa726",
       legendFontColor: "#7F7F7F",
       legendFontSize: 12,
@@ -60,7 +63,7 @@ const EventAnalytics = ({ pastevent }) => {
     labels: ["Budget", "Ex.Budget"],
     datasets: [
       {
-        data: [100000, 80000],
+        data: [eventinfo.soldTickets*eventinfo.ticketPrice,eventinfo.expectedBudget],
       },
     ],
   };
@@ -68,7 +71,7 @@ const EventAnalytics = ({ pastevent }) => {
     labels: ["Expected Crowd", "Participated Crowd"],
     datasets: [
       {
-        data: [100, 80],
+        data: [eventinfo.expectedCrowd,eventinfo.soldTickets],
       },
     ],
     color: "#ffa726",

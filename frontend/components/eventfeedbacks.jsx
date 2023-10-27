@@ -1,100 +1,90 @@
-import { React, useState } from "react";
-import {
-    FlatList,
-    SafeAreaView,
-    Text,
-    Dimensions,
-    View,
-    StyleSheet
+import React, { useState, useEffect } from "react";
+import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { FlatList } from "react-native-gesture-handler";
+import UserFeedbackCard from "./userFeedbackCard";
+const FeedbackModal = ({ visible, onClose, eventid }) => {
+  const [feedbackdata, setfeedbackdata] = useState([]);
 
-} from 'react-native';
-import FeedCard from "./feedCard";
+  const geteventFeedbacks = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
 
-const { width, height } = Dimensions.get("window");
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
 
-export default function EventFeedbacks() {
-    const [feedbackData, setFeedbackData] = useState([
-        {
-            id: "1",
-            eventName: "wiramaya",
-            userName: "John Doe",
-            date: "2021-05-01",
-            feedback: "This is a very good event. I really enjoyed it.",
-            userImage: require("../assets/images/user.png"),
-            rating: "1",
-        },
-        {
-            id: "2",
-            userName: "Doe",
-            eventName: "wiramaya",
-            date: "2021-05-01",
-            feedback: "This is a very good event. I really enjoyed it.",
-            userImage: require("../assets/images/user.png"),
-            rating: "2",
-        },
-        {
-            id: "3",
-            userName: "John Doe",
-            eventName: "React Native",
-            date: "2021-05-01",
-            feedback: "This is a very good event. I really enjoyed it.",
-            userImage: require("../assets/images/user.png"),
-            rating: "3",
-        },
-        {
-            id: "4",
-            userName: "John Doe",
-            eventName: "ExpoGo",
-            date: "2021-05-01",
-            feedback: "This is a very good event. I really enjoyed it.",
-            userImage: require("../assets/images/user.png"),
-            rating: "4",
-        },
-    ]);
+    axios
+      .get(`/feedback/for-event/${eventid}`, apiConfig)
+      .then((response) => {
+        setfeedbackdata(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
+  useEffect(() => {
+    geteventFeedbacks();
+  }, [eventid]);
 
-   
+  const renderItem = ({ item }) => (
+    <View style={styles.feedbackCardContainer}>
+      <UserFeedbackCard item={item} />
+    </View>
+  );
+  return (
+    <Modal visible={visible} animationType="slide">
+      <View style={styles.container}>
+        <Text style={styles.modalTitle}>Feedbacks</Text>
+        <FlatList
+          data={feedbackdata}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          horizontal={false}
+        />
 
+        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <Text style={styles.closeButtonText}>Close</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
+  );
+};
 
+export default FeedbackModal;
 
-
-    return (
-       <SafeAreaView style={styles} >
-            <FlatList
-                data={feedbackData}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <FeedCard item={item} />}
-            />
-        </SafeAreaView>
-
-
-
-
-
-
-    )
-
-
-
-}
-
-const styles=StyleSheet.create({
-
-container:{
-    flex:1,
-    alignContent:"center",
-    alignItems:"center",
-    
-}
-
-
-
-
-
-
-
-
-
-
-
-})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  closeButton: {
+    backgroundColor: "#e74c3c",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  feedbackCardContainer: {
+    marginBottom: 10,
+  },
+});

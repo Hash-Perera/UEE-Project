@@ -14,7 +14,7 @@ const Eventcard = ({ item, handleCardPress }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item)}>
       <Image
-        source={require("../assets/images/sampleEvent.jpeg")}
+         source={{ uri: `data:image/jpeg;base64,${item.images[0]}` }}
         style={styles.image}
       />
       <Text style={styles.eventName} numberOfLines={1}>
