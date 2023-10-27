@@ -49,7 +49,7 @@ const EventForm = () => {
 
     const locationObjjj = {
       longitude: locate.coords.longitude,
-      lattitude: locate.coords.latitude,
+      latitude: locate.coords.latitude,
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     };
@@ -75,13 +75,17 @@ const EventForm = () => {
       })
     );
 
+    const formattedDate =
+  date instanceof Date
+    ? date.toISOString().split("T")[0]
+    : "";
     // Your data object including base64-encoded images
     const data = {
       eventName: eventName,
       eventType: eventType,
       location: locationObj,
       time: formattedTime,
-      date: time.toISOString().split("T")[0],
+      date: formattedDate,
       expectedCrowd: expectedCrowd,
       expectedBudget: expectedBudget,
       description: eventdescription,
@@ -114,6 +118,11 @@ const EventForm = () => {
   };
 
   const pickImage = async () => {
+    if (images.length >= 3) {
+      // Limit the number of images to 3
+      alert("You can only upload up to 3 images.");
+      return;
+    }
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -122,7 +131,8 @@ const EventForm = () => {
     });
 
     if (!result.canceled) {
-      const newImages = [...images, result.uri];
+      
+      const newImages = [...images, result.assets[0].uri];
       setImages(newImages);
     }
   };
@@ -207,14 +217,14 @@ const EventForm = () => {
               <DateTimePicker
                 style={{ width: 200 }}
                 mode="time"
-                is24Hour
+                is24Hour={true}
                 placeholder="Select Time"
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 value={time}
-                onChange={(event, selectedtime) => {
+                onChange={(even, selectedtime) => {
                   setShowTimePicker(false);
-                  if (event.type === "set") {
+                  if (even.type === "set") {
                     setTime(selectedtime);
                   }
                 }}

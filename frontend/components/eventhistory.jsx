@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
     SafeAreaView,
     Text,
@@ -14,7 +14,9 @@ import {
 } from 'react-native';
 import Pasteventcard from "./pasteventcard";
 import { useNavigation } from "@react-navigation/native";
-
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 
 
@@ -31,7 +33,7 @@ const Mypastevents = () => {
 
 
     const [pastevents, setpastevents] = useState([
-        {
+      {/*}  {
             eventid: 1,
             eventname: "wiramaya",
             eventtype: "concert",
@@ -81,11 +83,12 @@ const Mypastevents = () => {
             ],
             description:"the main concert in the SLIIT campus"
         
-        }
+        }*/}
 
     ]);
+    
 
-    const [filteredventhistory, setFilteredeventhistory] = useState(pastevents);
+   
 
   const handleSearch = () => {
     const filtered = pastevents.filter((item) =>
@@ -96,11 +99,44 @@ const Mypastevents = () => {
 
 
 
-    function handleCardPress(event) {
+
+    useEffect(() => {
+        getAllEvents();
+      }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+          getAllEvents();
+        }, [])
+      );
+    
+      const getAllEvents = async () => {
+        const AuthToken = await AsyncStorage.getItem("token");
+    
+        const apiConfig = {
+          headers: {
+            Authorization: `Bearer ${AuthToken}`,
+            "Content-Type": "application/json",
+          },
+        };
+    
+        axios
+          .get("/event/all/my/past", apiConfig)
+          .then((response) => {
+            setpastevents(response.data);
+            
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      };
+    
+      function handleCardPress(event) {
         console.log("card pressed:", event);
         navigation.navigate("PastEventDetails", { pastevent: event });
 
     }
+     
 
 
 
@@ -137,7 +173,7 @@ const Mypastevents = () => {
 
 
                 <FlatList
-                    data={filteredventhistory}
+                    data={pastevents}
                     renderItem={({ item }) => (
                         <Pasteventcard
 
@@ -145,7 +181,7 @@ const Mypastevents = () => {
                             handleCardPress={() => handleCardPress(item)}
                         />)}
 
-                    keyExtractor={(item) => item.eventid}
+                    keyExtractor={(item) => item._id}
                     horizontal={false}
                     contentContainerStyle={styles.flatListContent}
 
