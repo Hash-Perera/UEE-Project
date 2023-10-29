@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,15 +8,15 @@ import {
   Dimensions,
   ScrollView,
   Image,
-  Button,
   FlatList,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Location from "expo-location";
 
 const { width, height } = Dimensions.get("window");
 
@@ -24,7 +24,7 @@ const EventForm = () => {
   const navigation = useNavigation();
   const [eventName, setEventName] = useState("");
   const [eventType, setEventType] = useState("Concert");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState(null);
   const [time, setTime] = useState(new Date());
   const [date, setDate] = useState(new Date());
   const [showPicker, setshowPicker] = useState(false);
@@ -33,11 +33,67 @@ const EventForm = () => {
   const [expectedBudget, setExpectedBudget] = useState("");
   const [ticketcount, setticketcount] = useState("");
   const [eventdescription, seteventdescription] = useState("");
-
   const [images, setImages] = useState([]);
-  const [image, setImage] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [locationObj, setLocationObj] = useState(null);
+
+  const locationtrack = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+      return;
+    }
+
+    const locate = await Location.getCurrentPositionAsync({});
+    setLocation(locate);
+
+    const locationObjjj = {
+      longitude: locate.coords.longitude,
+      latitude: locate.coords.latitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    };
+    setLocationObj(locationObjjj);
+  };
+
+  // Get user's current location
+  useEffect(() => {
+    locationtrack();
+  }, []);
 
   const handleSubmit = async () => {
+    // You can include your authorization logic here
+
+    const formattedTime =
+      time instanceof Date
+        ? time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        : "";
+
+    const base64Images = await Promise.all(
+      images.map(async (imageUri) => {
+        return await imageToBase64(imageUri);
+      })
+    );
+
+    const formattedDate =
+  date instanceof Date
+    ? date.toISOString().split("T")[0]
+    : "";
+    // Your data object including base64-encoded images
+    const data = {
+      eventName: eventName,
+      eventType: eventType,
+      location: locationObj,
+      time: formattedTime,
+      date: formattedDate,
+      expectedCrowd: expectedCrowd,
+      expectedBudget: expectedBudget,
+      description: eventdescription,
+      ticketCount: 1000,
+      ticketPrice: 1200,
+      images: base64Images, // Base64-encoded images
+    };
+
     const AuthToken = await AsyncStorage.getItem("token");
 
     const apiConfig = {
@@ -47,23 +103,9 @@ const EventForm = () => {
       },
     };
 
-    const formattedTime =
-      time instanceof Date
-        ? time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-        : "";
-    const data = {
-      eventName: eventName,
-      eventType: eventType,
-      location: location,
-      time: formattedTime,
-      date: time.toISOString().split("T")[0],
-      expectedCrowd: expectedCrowd,
-      expectedBudget: expectedBudget,
-      description: eventdescription,
-      ticketCount: 1000,
-      ticketPrice: 1200,
-    };
+    console.log(data);
 
+    // Your API call to save data in MongoDB
     axios
       .post("/event/create", data, apiConfig)
       .then((response) => {
@@ -76,6 +118,11 @@ const EventForm = () => {
   };
 
   const pickImage = async () => {
+    if (images.length >= 3) {
+      // Limit the number of images to 3
+      alert("You can only upload up to 3 images.");
+      return;
+    }
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -84,12 +131,35 @@ const EventForm = () => {
     });
 
     if (!result.canceled) {
-      const newImages = [...images, result.uri];
+      
+      const newImages = [...images, result.assets[0].uri];
       setImages(newImages);
-      setImage(null);
-    } else {
-      setImage(null);
     }
+  };
+
+  const imageToBase64 = async (imageUri) => {
+    try {
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      const base64String = await blobToBase64(blob);
+      return base64String;
+    } catch (error) {
+      console.error("Image to base64 conversion error:", error);
+      return null;
+    }
+  };
+
+  const blobToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result.split(",")[1]); // Extract the base64-encoded part
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(blob);
+    });
   };
 
   return (
@@ -105,14 +175,14 @@ const EventForm = () => {
             <TextInput
               style={styles.input}
               value={eventName}
-              placeholder="enter event name"
+              placeholder="Enter event name"
               onChangeText={(text) => setEventName(text)}
             />
 
             <Text style={styles.label}>Event Type:</Text>
             <Picker
               selectedValue={eventType}
-              onValueChange={(itemValue, itemIndex) => setEventType(itemValue)}
+              onValueChange={(itemValue) => setEventType(itemValue)}
               style={styles.picker}
             >
               <Picker.Item label="Concert" value="Concert" />
@@ -129,24 +199,19 @@ const EventForm = () => {
               >
                 <Text>ADD IMAGE</Text>
               </TouchableOpacity>
-              <View style={styles.selectedImageContainer}>
-                {images.map((uri, index) => (
+              <FlatList
+                data={images}
+                horizontal
+                renderItem={({ item, index }) => (
                   <Image
                     key={index}
-                    source={{ uri }}
+                    source={{ uri: item }}
                     style={styles.selectedImage}
                   />
-                ))}
-              </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
             </View>
-
-            <Text style={styles.label}>Location:</Text>
-            <TextInput
-              style={styles.input}
-              value={location}
-              placeholder="enter event location"
-              onChangeText={(text) => setLocation(text)}
-            />
 
             {showTimePicker && (
               <DateTimePicker
@@ -157,9 +222,9 @@ const EventForm = () => {
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 value={time}
-                onChange={(event, selectedtime) => {
+                onChange={(even, selectedtime) => {
                   setShowTimePicker(false);
-                  if (event.type === "set") {
+                  if (even.type === "set") {
                     setTime(selectedtime);
                   }
                 }}
@@ -203,7 +268,7 @@ const EventForm = () => {
                 }}
                 value={date}
                 onChange={(event, selectedDate) => {
-                  setshowPicker(false); // Close the picker
+                  setshowPicker(false);
                   if (event.type === "set") {
                     setDate(selectedDate);
                   }
@@ -212,7 +277,7 @@ const EventForm = () => {
             )}
             <TouchableOpacity onPress={() => setshowPicker(true)}>
               <Text style={styles.input}>
-                {date.toDateString()} {/* Display the selected date */}
+                {date instanceof Date ? date.toDateString() : ""}
               </Text>
             </TouchableOpacity>
 
@@ -220,7 +285,7 @@ const EventForm = () => {
             <TextInput
               style={styles.input}
               value={expectedCrowd}
-              placeholder="enter expected crowd"
+              placeholder="Enter expected crowd"
               onChangeText={(text) => setExpectedCrowd(text)}
               keyboardType="numeric"
             />
@@ -229,15 +294,15 @@ const EventForm = () => {
             <TextInput
               style={styles.input}
               value={expectedBudget}
-              placeholder="enter expected budget"
+              placeholder="Enter expected budget"
               onChangeText={(text) => setExpectedBudget(text)}
               keyboardType="numeric"
             />
-            <Text style={styles.label}>tickets count:</Text>
+            <Text style={styles.label}>Tickets Count:</Text>
             <TextInput
               style={styles.input}
               value={ticketcount}
-              placeholder="enter the ticket count"
+              placeholder="Enter the ticket count"
               onChangeText={(text) => setticketcount(text)}
               keyboardType="numeric"
             />
@@ -245,9 +310,9 @@ const EventForm = () => {
             <TextInput
               style={styles.eventdescription}
               value={eventdescription}
-              placeholder="enter event description"
+              placeholder="Enter event description"
               onChangeText={(text) => seteventdescription(text)}
-              multiline={true}
+              multiline
             />
 
             <TouchableOpacity
@@ -290,7 +355,6 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderWidth: 1,
     marginBottom: 15,
-
     borderRadius: 10,
     backgroundColor: "#fff",
   },

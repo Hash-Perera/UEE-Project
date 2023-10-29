@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 const { width, height } = Dimensions.get("window");
 import SponsorCard from "../components/sponsorCard";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
@@ -19,9 +19,15 @@ const SponsorDash = () => {
   const navigation = useNavigation();
   const [list, setList] = useState([]);
 
-  useEffect(() => {
-    getSponsorships();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getSponsorships();
+    }, [])
+  );
+
+  // useEffect(() => {
+  //   getSponsorships();
+  // }, []);
 
   const getSponsorships = async () => {
     const AuthToken = await AsyncStorage.getItem("token");

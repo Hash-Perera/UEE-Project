@@ -106,7 +106,39 @@ const UpdateEvent = ({ route }) => {
     );
   }
 
+  const renderExistingImages = () => {
+    return event.images.map((image, index) => (
+      <View key={index} style={styles.imageContainer}>
+        {typeof image === "string" ? (
+          <Image
+            source={{ uri: `data:image/jpeg;base64,${image}` }}
+            style={styles.selectedImage}
+          />
+        ) : (
+          <Image source={{ uri: image.uri }} style={styles.selectedImage} />
+        )}
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => deleteImage(index)}
+        >
+          <Text style={styles.deleteButtonText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    ));
+  };
+  const deleteImage = (index) => {
+    const updatedImages = [...event.images];
+    updatedImages.splice(index, 1);
+    setEvent({ ...event, images: updatedImages });
+  };
+
   const pickImage = async () => {
+    if (event.images.length >= 3) {
+      // Limit the number of images to 3
+      alert("You can only upload up to 3 images.");
+      return;
+    }
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -115,12 +147,46 @@ const UpdateEvent = ({ route }) => {
     });
 
     if (!result.canceled) {
-      const newImages = [...event.images, result.uri];
-      setEvent(newImages);
-      setImage(null);
+      console.log(result);
+
+      const newImages = [...event.images, result.assets[0].uri];
+      // Convert the image to base64
+      const base64Image = await imageToBase64(result.assets[0].uri);
+
+      if (base64Image) {
+        const newImages = [...event.images, base64Image];
+        setEvent({ ...event, images: newImages });
+      } else {
+        alert("Failed to convert image to base64.");
+      }
     } else {
       setImage(null);
     }
+  };
+
+  const imageToBase64 = async (imageUri) => {
+    try {
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      const base64String = await blobToBase64(blob);
+      return base64String;
+    } catch (error) {
+      console.error("Image to base64 conversion error:", error);
+      return null;
+    }
+  };
+
+  const blobToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result.split(",")[1]); // Extract the base64-encoded part
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(blob);
+    });
   };
 
   return (
@@ -163,26 +229,17 @@ const UpdateEvent = ({ route }) => {
                 <Text>ADD IMAGE</Text>
               </TouchableOpacity>
               <View style={styles.selectedImageContainer}>
-                {event.images &&
-                  event.images.map((uri, index) =>
-                    typeof uri === "string" ? (
-                      <Image
-                        key={index}
-                        source={{ uri }}
-                        style={styles.selectedImage}
-                      />
-                    ) : null
-                  )}
+                {renderExistingImages()}
               </View>
             </View>
 
-            <Text style={styles.label}>Location:</Text>
+            {/* <Text style={styles.label}>Location:</Text>
             <TextInput
               style={styles.input}
               value={event.location}
               placeholder="enter event location"
               onChangeText={(text) => setEvent({ ...event, location: text })}
-            />
+            />*/}
 
             {showTimePicker && (
               <DateTimePicker

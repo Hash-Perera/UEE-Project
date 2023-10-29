@@ -26,6 +26,55 @@ const SponsorDetailView = ({ route }) => {
   const [location, setLocation] = useState(item.location);
   const [description, setDescription] = useState(item.description);
 
+  const deleteSp = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .delete(`/sponsor/delete/${item._id}`, apiConfig)
+      .then((response) => {
+        console.log(response.data);
+        navigation.navigate("Sponsor Dashboard");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+  const updateSp = async () => {
+    const AuthToken = await AsyncStorage.getItem("token");
+
+    const apiConfig = {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const data = {
+      sponsorship: sponsorship,
+      budget: budget,
+      eventType: eventType,
+      location: location,
+      description: description,
+    };
+
+    axios
+      .put(`/sponsor/update/${item._id}`, data, apiConfig)
+      .then((response) => {
+        console.log(response.data);
+        navigation.navigate("Sponsor Dashboard");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   const handleBack = () => {
     navigation.goBack();
   };
@@ -91,11 +140,16 @@ const SponsorDetailView = ({ route }) => {
               />
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.registerButton}>
+              <TouchableOpacity
+                style={styles.registerButton}
+                onPress={updateSp}
+              >
                 <Text style={styles.registerButtonText}>Save Changes</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.signButton}>
-                <Text style={styles.signButtonText}>Delete</Text>
+                <Text style={styles.signButtonText} onPress={deleteSp}>
+                  Delete
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

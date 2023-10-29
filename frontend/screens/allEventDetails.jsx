@@ -10,7 +10,6 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
-import * as Burnt from "burnt";
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
@@ -28,14 +27,6 @@ const GeneralEventDetails = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [feedbackData, setFeedbackData] = useState([]);
-
-  const toastMessage = () => {
-    Burnt.toast({
-      title: "Feedback Added",
-      preset: "done",
-      message: "Your feedback has been added successfully",
-    });
-  };
 
   useEffect(() => {
     getFeedbacks();
@@ -55,7 +46,6 @@ const GeneralEventDetails = ({ route }) => {
     axios
       .get(`/feedback/for-event/${item._id}`, apiConfig)
       .then((response) => {
-        console.log(response.data);
         setFeedbackData(response.data);
       })
       .catch((e) => {
@@ -87,7 +77,6 @@ const GeneralEventDetails = ({ route }) => {
       .post("/feedback/create", data, apiConfig)
       .then((response) => {
         console.log(response.data);
-        toastMessage();
         getFeedbacks();
       })
       .catch((e) => {
@@ -141,7 +130,7 @@ const GeneralEventDetails = ({ route }) => {
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Image
-            source={require("../assets/images/sampleEvent.jpeg")}
+            source={{ uri: `data:image/jpeg;base64,${item.images[0]}` }}
             style={styles.eventImg}
             resizeMode="cover"
           />
@@ -174,10 +163,10 @@ const GeneralEventDetails = ({ route }) => {
               <Text style={{ fontWeight: "bold", color: "gray" }}>Time: </Text>
               {item.time}
             </Text>
-            <Text>
+            {/* <Text>
               <Text style={{ fontWeight: "bold", color: "gray" }}>Venue: </Text>
               {item.location}
-            </Text>
+            </Text> */}
           </View>
           <View
             style={{

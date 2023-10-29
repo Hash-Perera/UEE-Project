@@ -20,7 +20,7 @@ const UserEventCard = ({ item, handleCardPress }) => {
       <View style={styles.cardContainer}>
         <View style={styles.imageContainer}>
           <Image
-            source={item.eventImage}
+            source={{ uri: `data:image/jpeg;base64,${item.images[0]}` }}
             resizeMode="contain"
             style={styles.image}
           />
@@ -28,7 +28,7 @@ const UserEventCard = ({ item, handleCardPress }) => {
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>{item.eventName}</Text>
           <Text>Event Date: {item.date}</Text>
-          <Text>Event Location: {item.location}</Text>
+          {/* <Text>Event Location: {item.location}</Text> */}
           <Text>Time: {item.time}</Text>
           <View style={styles.ratingBar}>
             {Array.from({ length: randomNum }, (x, i) => {
