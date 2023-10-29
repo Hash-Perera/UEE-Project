@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 const { width, height } = Dimensions.get("window");
@@ -22,6 +22,7 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import UserFeedbackCard from "../components/userFeedbackCard";
+import { TouchableWithoutFeedback, Keyboard } from "react-native";
 
 const GeneralEventDetails = ({ route }) => {
   const { item } = route.params;
@@ -78,10 +79,17 @@ const GeneralEventDetails = ({ route }) => {
   };
 
   //price calculation
-  useEffect(() => {
-    const newTotal = price * ticketQty;
-    setTotal(newTotal);
-  }, [price, ticketQty]);
+  // useEffect(() => {
+  //   const newTotal = price * ticketQty;
+  //   setTotal(newTotal);
+  // }, [price, ticketQty]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const newTotal = price * ticketQty;
+      setTotal(newTotal);
+    }, [price, ticketQty])
+  );
 
   //buy ticket
   const buyTicket = async () => {
@@ -103,6 +111,7 @@ const GeneralEventDetails = ({ route }) => {
       .post("/event/buy-ticket", data, apiConfig)
       .then((response) => {
         console.log(response.data);
+        navigation.navigate("Ticket", { item: data });
         bottomSheetModalRef.current?.close();
       })
       .catch((e) => {
@@ -111,211 +120,218 @@ const GeneralEventDetails = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <BottomSheetModalProvider>
-        <StatusBar style="dark" />
-        <View style={styles.container}>
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("../assets/images/sampleEvent.jpeg")}
-              style={styles.eventImg}
-              resizeMode="cover"
-            />
-            <View style={styles.darkLayer} />
-            <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-              <Image source={require("../assets/images/backIcon.png")} />
-            </TouchableOpacity>
-            <Text style={styles.eventTitle}>{item.eventName}</Text>
-            <Text style={styles.eventDesc} numberOfLines={3}>
-              {item.description}
-            </Text>
-          </View>
-          <View style={styles.photos}>
-            <TouchableOpacity>
-              <Text style={styles.photosText}>Photos</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.eventDetails}>
-            <ScrollView>
-              <Text>
-                <Text style={{ fontWeight: "bold", color: "gray" }}>
-                  Date:{" "}
-                </Text>
-                {item.date}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <BottomSheetModalProvider>
+          <StatusBar style="dark" />
+          <View style={styles.container}>
+            <View style={styles.imageContainer}>
+              <Image
+                source={{ uri: `data:image/jpeg;base64,${item.images[0]}` }}
+                style={styles.eventImg}
+                resizeMode="cover"
+              />
+              <View style={styles.darkLayer} />
+              <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+                <Image source={require("../assets/images/backIcon.png")} />
+              </TouchableOpacity>
+              <Text style={styles.eventTitle}>{item.eventName}</Text>
+              <Text style={styles.eventDesc} numberOfLines={3}>
+                {item.description}
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
+            </View>
+            <View style={styles.photos}>
+              <TouchableOpacity>
+                <Text style={styles.photosText}>Photos</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.eventDetails}>
+              <ScrollView>
                 <Text>
                   <Text style={{ fontWeight: "bold", color: "gray" }}>
-                    Time:{" "}
+                    Date:{" "}
                   </Text>
-                  {item.time}
+                  {item.date}
                 </Text>
-                {/* <Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text>
+                    <Text style={{ fontWeight: "bold", color: "gray" }}>
+                      Time:{" "}
+                    </Text>
+                    {item.time}
+                  </Text>
+                  {/* <Text>
                   <Text style={{ fontWeight: "bold", color: "gray" }}>
                     Venue:{" "}
                   </Text>
                   {item.location}
                 </Text> */}
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text>
-                  <Text style={{ fontWeight: "bold", color: "gray" }}>
-                    Organized by:{" "}
-                  </Text>
-                  FCSC
-                </Text>
-                <Text>
-                  <Text style={{ fontWeight: "bold", color: "gray" }}>
-                    Contact:{" "}
-                  </Text>
-                  0771234567
-                </Text>
-              </View>
-              <View
-                style={{ flexDirection: "row", justifyContent: "space-around" }}
-              >
-                <Text style={styles.feedbackTittleTxt}>Feedbacks :</Text>
-              </View>
-            </ScrollView>
-            <FlatList
-              data={feedbackData}
-              renderItem={({ item }) => <UserFeedbackCard item={item} />}
-              idExtractor={(item) => item.id}
-              horizontal={true}
-            />
-          </View>
-          <View style={styles.buyTicketSec}>
-            <TouchableOpacity
-              style={styles.buyTicketBtn}
-              onPress={handlePresentModal}
-            >
-              <Text style={styles.buyTicketText}>Buy Tickets</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* BottomSheet Content */}
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={0}
-            snapPoints={snapPoints}
-            backgroundStyle={{
-              borderRadius: width * 0.08,
-            }}
-          >
-            <View style={styles.bottomSheetContainer}>
-              <Text style={styles.bTittle}>Reserve Your Ticket</Text>
-              <View style={styles.horizontalLine} />
-              <View style={styles.eventSummary}>
-                <View>
-                  <Image
-                    source={require("../assets/images/sampleEvent.jpeg")}
-                    style={styles.bottomEventImg}
-                  />
                 </View>
-                <View style={styles.bottomDetails}>
-                  <Text style={styles.bEvent}>{item.eventName}</Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text>
+                    <Text style={{ fontWeight: "bold", color: "gray" }}>
+                      Organized by:{" "}
+                    </Text>
+                    FCSC
+                  </Text>
+                  <Text>
+                    <Text style={{ fontWeight: "bold", color: "gray" }}>
+                      Contact:{" "}
+                    </Text>
+                    0771234567
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                  }}
+                >
+                  <Text style={styles.feedbackTittleTxt}>Feedbacks :</Text>
+                </View>
+              </ScrollView>
+              <FlatList
+                data={feedbackData}
+                renderItem={({ item }) => <UserFeedbackCard item={item} />}
+                idExtractor={(item) => item.id}
+                horizontal={true}
+              />
+            </View>
+            <View style={styles.buyTicketSec}>
+              <TouchableOpacity
+                style={styles.buyTicketBtn}
+                onPress={handlePresentModal}
+              >
+                <Text style={styles.buyTicketText}>Buy Tickets</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* BottomSheet Content */}
+            <BottomSheetModal
+              ref={bottomSheetModalRef}
+              index={0}
+              snapPoints={snapPoints}
+              backgroundStyle={{
+                borderRadius: width * 0.08,
+              }}
+            >
+              <View style={styles.bottomSheetContainer}>
+                <Text style={styles.bTittle}>Reserve Your Ticket</Text>
+                <View style={styles.horizontalLine} />
+                <View style={styles.eventSummary}>
                   <View>
-                    <Text style={styles.subDetails}>Date : {item.date}</Text>
-                    {/* <Text style={styles.subDetails}>
+                    <Image
+                      source={{
+                        uri: `data:image/jpeg;base64,${item.images[0]}`,
+                      }}
+                      style={styles.bottomEventImg}
+                    />
+                  </View>
+                  <View style={styles.bottomDetails}>
+                    <Text style={styles.bEvent}>{item.eventName}</Text>
+                    <View>
+                      <Text style={styles.subDetails}>Date : {item.date}</Text>
+                      {/* <Text style={styles.subDetails}>
                       Location : {item.location}
                     </Text> */}
-                    <Text style={styles.subDetails}>Duration : 4h</Text>
+                      <Text style={styles.subDetails}>Duration : 4h</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-              <View style={styles.ticketDetails}>
-                <Text style={styles.ticketTittle}>Ticket Details</Text>
-                <View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                    }}
-                  >
-                    <Text style={styles.bEvent}>General</Text>
-                    <Text style={styles.bEvent}>
-                      Available Tickets :{" "}
-                      <Text style={{ color: "red", fontWeight: "bold" }}>
-                        {" "}
-                        {item.ticketCount - item.soldTickets}
-                      </Text>
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                    }}
-                  >
-                    <Text style={styles.subDetails}>
-                      Price : Rs. {item.ticketPrice}
-                    </Text>
+                <View style={styles.ticketDetails}>
+                  <Text style={styles.ticketTittle}>Ticket Details</Text>
+                  <View>
                     <View
                       style={{
                         flexDirection: "row",
+                        justifyContent: "space-around",
                       }}
                     >
-                      <Text style={styles.subDetails}>Quantity : </Text>
-                      <TextInput
-                        style={{
-                          width: width * 0.1,
-                          height: height * 0.04,
-                          backgroundColor: "#D9D9D8",
-                          borderRadius: width * 0.02,
-                          paddingHorizontal: width * 0.02,
-                          left: width * 0.06,
-                          top: height * 0.01,
-                        }}
-                        keyboardType="numeric"
-                        label="0"
-                        placeholder="1"
-                        onChangeText={(text) => setTicketQty(text)}
-                      />
+                      <Text style={styles.bEvent}>General</Text>
+                      <Text style={styles.bEvent}>
+                        Available Tickets :{" "}
+                        <Text style={{ color: "red", fontWeight: "bold" }}>
+                          {" "}
+                          {item.ticketCount - item.soldTickets}
+                        </Text>
+                      </Text>
                     </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                      }}
+                    >
+                      <Text style={styles.subDetails}>
+                        Price : Rs. {item.ticketPrice}
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                        }}
+                      >
+                        <Text style={styles.subDetails}>Quantity : </Text>
+                        <TextInput
+                          style={{
+                            width: width * 0.1,
+                            height: height * 0.04,
+                            backgroundColor: "#D9D9D8",
+                            borderRadius: width * 0.02,
+                            paddingHorizontal: width * 0.02,
+                            left: width * 0.06,
+                            top: height * 0.01,
+                          }}
+                          keyboardType="numeric"
+                          label="0"
+                          placeholder="1"
+                          onChangeText={(text) => setTicketQty(text)}
+                        />
+                      </View>
+                    </View>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        alignSelf: "flex-end",
+                        top: height * 0.05,
+                        right: width * 0.12,
+                      }}
+                    >
+                      Total : {total}
+                    </Text>
                   </View>
-                  <Text
+                </View>
+                <View style={styles.buyBtn}>
+                  <TouchableOpacity
                     style={{
-                      fontWeight: "bold",
-                      alignSelf: "flex-end",
-                      top: height * 0.05,
-                      right: width * 0.12,
+                      backgroundColor: "#16213E",
+                      padding: width * 0.03,
+                      borderRadius: width * 0.1,
+                      alignItems: "center",
+                      width: "35%",
+                      alignSelf: "center",
+                      marginTop: height * 0.14,
                     }}
+                    onPress={buyTicket}
                   >
-                    Total : {total}
-                  </Text>
+                    <Text style={styles.buyTicketText}>Buy</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-              <View style={styles.buyBtn}>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#16213E",
-                    padding: width * 0.03,
-                    borderRadius: width * 0.1,
-                    alignItems: "center",
-                    width: "35%",
-                    alignSelf: "center",
-                    marginTop: height * 0.14,
-                  }}
-                  onPress={buyTicket}
-                >
-                  <Text style={styles.buyTicketText}>Buy</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </BottomSheetModal>
-        </View>
-      </BottomSheetModalProvider>
-    </SafeAreaView>
+            </BottomSheetModal>
+          </View>
+        </BottomSheetModalProvider>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

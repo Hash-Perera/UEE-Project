@@ -148,7 +148,6 @@ const UpdateEvent = ({ route }) => {
 
     if (!result.canceled) {
       console.log(result);
-      
 
       const newImages = [...event.images, result.assets[0].uri];
       // Convert the image to base64
@@ -157,16 +156,14 @@ const UpdateEvent = ({ route }) => {
       if (base64Image) {
         const newImages = [...event.images, base64Image];
         setEvent({ ...event, images: newImages });
-      }
-      else {
+      } else {
         alert("Failed to convert image to base64.");
       }
-
     } else {
       setImage(null);
     }
-  }; 
-  
+  };
+
   const imageToBase64 = async (imageUri) => {
     try {
       const response = await fetch(imageUri);
@@ -236,7 +233,7 @@ const UpdateEvent = ({ route }) => {
               </View>
             </View>
 
-           {/* <Text style={styles.label}>Location:</Text>
+            {/* <Text style={styles.label}>Location:</Text>
             <TextInput
               style={styles.input}
               value={event.location}

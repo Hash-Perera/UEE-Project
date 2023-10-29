@@ -89,9 +89,9 @@ export default function GeneralNavigation() {
         options={{
           drawerLabel: "Home",
           title: "Home",
-          drawerIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={COLORS.white} />
-          ),
+          // drawerIcon: ({ color, size }) => (
+          //   <Ionicons name="home" size={size} color={COLORS.white} />
+          // ),
         }}
         component={Home}
       />
