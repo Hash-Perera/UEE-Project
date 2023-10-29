@@ -18,9 +18,10 @@ import PastEventDetails from "./components/pasteventdetails";
 import EventForm from "./components/createevent";
 import UpdateEvent from "./components/updateevent";
 import axios from "axios";
+import Ticket from "./screens/Ticket";
 const Stack = createStackNavigator();
 
-axios.defaults.baseURL = "http://192.168.8.198:3001";
+axios.defaults.baseURL = "http://172.28.16.26:3001";
 
 export default function App() {
   const [fontloaded] = useFonts({
@@ -103,6 +104,11 @@ export default function App() {
           <Stack.Screen
             name="SponsorDetailView"
             component={SponsorDetailView}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Ticket"
+            component={Ticket}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

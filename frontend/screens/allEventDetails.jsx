@@ -46,7 +46,6 @@ const GeneralEventDetails = ({ route }) => {
     axios
       .get(`/feedback/for-event/${item._id}`, apiConfig)
       .then((response) => {
-        console.log(response.data);
         setFeedbackData(response.data);
       })
       .catch((e) => {
@@ -131,7 +130,7 @@ const GeneralEventDetails = ({ route }) => {
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Image
-            source={require("../assets/images/sampleEvent.jpeg")}
+            source={{ uri: `data:image/jpeg;base64,${item.images[0]}` }}
             style={styles.eventImg}
             resizeMode="cover"
           />

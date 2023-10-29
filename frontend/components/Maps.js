@@ -117,7 +117,12 @@ export default function Maps() {
 
                   <Text style={styles.name2}>
                     <Text>{event.eventType}</Text>
-                    {/* <Image style={styles.image} source={{ uri: event.image }} /> */}
+                    <Image
+                      style={styles.image}
+                      source={{
+                        uri: `data:image/jpeg;base64,${event.images[0]}`,
+                      }}
+                    />
                   </Text>
                 </View>
               </View>
